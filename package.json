@@ -1,0 +1,53 @@
+{
+  "name": "otab_server",
+  "version": "1.0.0",
+  "description": "MySQL server for Over The Air Bingo",
+  "main": "./src/server.js",
+  "bin": "./src/server.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "start:dev": "REACT_APP_STAGE='development' nodemon ./src/server.js"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/**/*",
+      "src/**/*"
+    ],
+    "targets": [
+      "node13-linux-x64"
+    ],
+    "outputPath": "build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarryllRobinson/otab_server.git"
+  },
+  "keywords": [
+    "otab",
+    "server",
+    "mysql",
+    "node"
+  ],
+  "author": "Darryll Robinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DarryllRobinson/otab_server/issues"
+  },
+  "homepage": "https://github.com/DarryllRobinson/otab_server#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "mysql2": "^3.3.1",
+    "pkg": "^5.8.1",
+    "sequelize": "^6.31.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
