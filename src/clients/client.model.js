@@ -5,7 +5,7 @@ module.exports = model;
 function model(sequelize) {
   const attributes = {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    brandName: { type: DataTypes.STRING, allowNull: false },
+    clientName: { type: DataTypes.STRING, allowNull: false },
     tenant: { type: DataTypes.STRING, allowNull: false },
     passwordHash: { type: DataTypes.STRING, allowNull: false },
     contactFirstName: { type: DataTypes.STRING, allowNull: true },
@@ -18,7 +18,7 @@ function model(sequelize) {
   };
 
   //return sequelize.define('account', attributes, options);
-  return sequelize.define('brand', attributes, {
-    tableName: 'tbl_brands',
+  return sequelize.define('client', attributes, {
+    tableName: 'tbl_clients',
   });
 }

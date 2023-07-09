@@ -9,6 +9,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// Check to see if there is anything worth copying from here
+// /Users/darryllrobinson/projects/node_rest_api_mysql/app.js
+
 // bcrypt config
 
 // allow cors requests from any origin and with credentials
@@ -24,6 +27,9 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.send('hello world');
 });
+
+// Health check
+app.use('/healthcheck', require('./helpers/healthchecker'));
 
 //app.use('/api/users', require('./users/users.controller'));
 // app.get('/api/users', (req, res) => {
