@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 // Health check
-app.use('/healthcheck', require('./helpers/healthchecker'));
+app.use('/healthcheck', require('./middleware/healthchecker'));
 
 //app.use('/api/users', require('./users/users.controller'));
 // app.get('/api/users', (req, res) => {
