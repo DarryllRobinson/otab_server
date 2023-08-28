@@ -22,6 +22,8 @@ app.use(cookieParser());
 //   })
 // );
 
+const models = require('./models');
+
 // api routes
 // Simple test route
 app.get('/', (req, res) => {
