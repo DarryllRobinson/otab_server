@@ -82,10 +82,10 @@ async function initialize() {
     console.log('Connected as id', connection.threadId);
   });
 
-  await connection.execute(
+  connection.execute(
     `CREATE DATABASE IF NOT EXISTS \`${database}\`;`,
     async function (err, results, fields) {
-      //console.log('just tried to create database');
+      console.log('just tried to create database');
       if (err) console.log('err: ', err); // results contains rows returned by server
       //console.log('results: ', results);
       //console.log('fields: ', fields);
@@ -101,7 +101,7 @@ async function initialize() {
 
       // sync all models with database
       initModels(db, sequelize);
-      await sequelize.sync();
+      await sequelize.sync({ force: true });
       console.log('completed sync');
     }
   );
@@ -134,7 +134,7 @@ async function initSequelize(database, user, password, host, socketPath) {
 function initModels(db, sequelize) {
   //console.log('initModels ', db, sequelize);
   // init models and add them to the exported db object
-  /*db.Client = require('../clients/client.model')(sequelize);*/
+  db.Client = require('../clients/client.model')(sequelize);
 
   db.User = require('../users/user.model')(sequelize);
   db.RefreshToken = require('../users/refresh-token.model')(sequelize);
@@ -148,87 +148,86 @@ function initModels(db, sequelize) {
   db.Mapping = require('../mappings/mapping.model')(sequelize);*/
 
   // define relationships
-  // add relationships for clients, customers, accounts, contacts, cases and outcomes
-  // including invoices now too
-  db.Client.hasMany(
-    db.User,
-    { foreignKey: 'f_clientId' },
-    { onDelete: 'CASCADE' }
-  );
+  // add relationships for clients
+  // db.Client.hasMany(
+  //   db.User,
+  //   { foreignKey: 'f_clientId' },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.User.belongsTo(
-    db.Client,
-    { foreignKey: 'f_clientId' },
-    { targetKey: 'id' }
-  );
-  db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
-  db.RefreshToken.belongsTo(db.User);
+  // db.User.belongsTo(
+  //   db.Client,
+  //   { foreignKey: 'f_clientId' },
+  //   { targetKey: 'id' }
+  // );
+  // db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
+  // db.RefreshToken.belongsTo(db.User);
 
-  // Mapping integration
-  db.Client.hasOne(
-    db.Mapping,
-    { foreignKey: 'f_clientId' },
-    { onDelete: 'CASCADE' }
-  );
-  db.Mapping.belongsTo(db.Client);
+  // // Mapping integration
+  // db.Client.hasOne(
+  //   db.Mapping,
+  //   { foreignKey: 'f_clientId' },
+  //   { onDelete: 'CASCADE' }
+  // );
+  // db.Mapping.belongsTo(db.Client);
 
-  db.Customer.hasMany(
-    db.Invoice,
-    { foreignKey: 'f_customerRefNo' },
-    { onDelete: 'CASCADE' }
-  );
+  // db.Customer.hasMany(
+  //   db.Invoice,
+  //   { foreignKey: 'f_customerRefNo' },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.Invoice.belongsTo(db.Customer, {
-    foreignKey: 'f_customerRefNo',
-    targetKey: 'customerRefNo',
-  });
+  // db.Invoice.belongsTo(db.Customer, {
+  //   foreignKey: 'f_customerRefNo',
+  //   targetKey: 'customerRefNo',
+  // });
 
-  db.Customer.hasMany(
-    db.Account,
-    { foreignKey: 'f_customerRefNo' },
-    { onDelete: 'CASCADE' }
-  );
+  // db.Customer.hasMany(
+  //   db.Account,
+  //   { foreignKey: 'f_customerRefNo' },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.Account.belongsTo(db.Customer, {
-    foreignKey: 'f_customerRefNo',
-    targetKey: 'customerRefNo',
-  });
+  // db.Account.belongsTo(db.Customer, {
+  //   foreignKey: 'f_customerRefNo',
+  //   targetKey: 'customerRefNo',
+  // });
 
-  db.Account.hasMany(
-    db.Case,
-    {
-      foreignKey: 'f_accountNumber',
-    },
-    { onDelete: 'CASCADE' }
-  );
+  // db.Account.hasMany(
+  //   db.Case,
+  //   {
+  //     foreignKey: 'f_accountNumber',
+  //   },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.Account.hasOne(
-    db.Contact,
-    {
-      foreignKey: 'f_accountNumber',
-    },
-    { onDelete: 'CASCADE' }
-  );
+  // db.Account.hasOne(
+  //   db.Contact,
+  //   {
+  //     foreignKey: 'f_accountNumber',
+  //   },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.Contact.belongsTo(db.Account, {
-    foreignKey: 'f_accountNumber',
-    targetKey: 'accountNumber',
-  });
+  // db.Contact.belongsTo(db.Account, {
+  //   foreignKey: 'f_accountNumber',
+  //   targetKey: 'accountNumber',
+  // });
 
-  db.Case.belongsTo(db.Account, {
-    foreignKey: 'f_accountNumber',
-    targetKey: 'accountNumber',
-  });
-  db.Case.hasMany(
-    db.Outcome,
-    {
-      foreignKey: 'f_caseNumber',
-    },
-    { onDelete: 'CASCADE' }
-  );
+  // db.Case.belongsTo(db.Account, {
+  //   foreignKey: 'f_accountNumber',
+  //   targetKey: 'accountNumber',
+  // });
+  // db.Case.hasMany(
+  //   db.Outcome,
+  //   {
+  //     foreignKey: 'f_caseNumber',
+  //   },
+  //   { onDelete: 'CASCADE' }
+  // );
 
-  db.Outcome.belongsTo(db.Case, {
-    foreignKey: 'f_caseNumber',
-    targetKey: 'caseNumber',
-  });
+  // db.Outcome.belongsTo(db.Case, {
+  //   foreignKey: 'f_caseNumber',
+  //   targetKey: 'caseNumber',
+  // });
 }

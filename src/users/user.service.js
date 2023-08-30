@@ -363,7 +363,7 @@ function basicDetails(user) {
     firstName,
     lastName,
     email,
-    phone,
+    mobile,
     role,
     active,
     created,
@@ -376,7 +376,7 @@ function basicDetails(user) {
     firstName,
     lastName,
     email,
-    phone,
+    mobile,
     role,
     active,
     created,
@@ -400,7 +400,7 @@ async function sendVerificationEmail(user, origin) {
 
   await sendEmail({
     to: user.email,
-    subject: 'The System Collections Platform - Verify Email',
+    subject: 'Welcome to Over the Air Bingo - Verify Email',
     html: `<h4>Verify Email</h4>
                <p>Thanks for registering!</p>
                ${message}`,
@@ -417,7 +417,7 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 
   await sendEmail({
     to: email,
-    subject: 'The System Collections Platform - Email Already Registered',
+    subject: 'Over the Air Bingo - Email Already Registered',
     html: `<h4>Email Already Registered</h4>
                <p>Your email <strong>${email}</strong> is already registered.</p>
                ${message}`,
@@ -437,7 +437,7 @@ async function sendPasswordResetEmail(user, origin) {
 
   await sendEmail({
     to: user.email,
-    subject: 'The System Collections Platform - Reset Password',
+    subject: 'Over the Air Bingo - Reset Password',
     html: `<h4>Reset Password Email</h4>
                ${message}`,
   });

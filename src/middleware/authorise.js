@@ -1,4 +1,4 @@
-const jwt = require('express-jwt');
+const { expressjwt: jwt } = require('express-jwt');
 const { secret } = require('../helpers/config.js');
 const db = require('../helpers/db');
 

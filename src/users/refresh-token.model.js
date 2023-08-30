@@ -31,6 +31,7 @@ function model(sequelize) {
 
   const options = {
     // disable default timestamp fields (createdAt and updatedAt)
+    tableName: 'tbl_refreshTokens',
     timestamps: false,
   };
 

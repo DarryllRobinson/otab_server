@@ -22,13 +22,14 @@ app.use(cookieParser());
 //   })
 // );
 
-const models = require('./models');
-
 // api routes
 // Simple test route
 app.get('/', (req, res) => {
   res.send('hello world');
 });
+
+// Clients / Brands / Tenants
+app.use('/api/clients', require('./clients/clients.controller'));
 
 // Health check
 app.use('/healthcheck', require('./middleware/healthchecker'));

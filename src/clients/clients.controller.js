@@ -8,9 +8,9 @@ const clientService = require('./client.service');
 
 // routes
 router.get('/', authorise(), getAll);
-router.get('/invoices', authorise(), getCustomerInvoices);
+//router.get('/invoices', authorise(), getCustomerInvoices);
 router.get('/:id', authorise(), getById);
-router.post('/bulk', authorise(), bulkCreate);
+//router.post('/bulk', authorise(), bulkCreate);
 router.post('/', authorise(), createSchema, create);
 router.put('/:id', authorise(), updateSchema, update);
 router.delete('/:id', authorise(), _delete);

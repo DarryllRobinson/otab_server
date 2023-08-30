@@ -6,7 +6,6 @@ function model(sequelize) {
   const attributes = {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     clientName: { type: DataTypes.STRING, allowNull: false },
-    tenant: { type: DataTypes.STRING, allowNull: false },
     passwordHash: { type: DataTypes.STRING, allowNull: false },
     contactFirstName: { type: DataTypes.STRING, allowNull: true },
     contactLastName: { type: DataTypes.STRING, allowNull: true },
