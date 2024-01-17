@@ -1,43 +1,26 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
-//const cors = require('cors');
+const jwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser());
 
-// Check to see if there is anything worth copying from here
-// /Users/darryllrobinson/projects/node_rest_api_mysql/app.js
-
-// bcrypt config
-
-// allow cors requests from any origin and with credentials
-// app.use(
-//   cors({
-//     origin: (origin, callback) => callback(null, true),
-//     credentials: true,
-//   })
-// );
+// use JWT auth to secure the api
+app.use(jwt());
 
 // api routes
+
 // Simple test route
 app.get('/', (req, res) => {
   res.send('hello world');
 });
 
-// Clients / Brands / Tenants
-app.use('/api/clients', require('./clients/clients.controller'));
+app.use('/users', require('./users/users.controller'));
 
-// Health check
-app.use('/healthcheck', require('./middleware/healthchecker'));
-
-//app.use('/api/users', require('./users/users.controller'));
-// app.get('/api/users', (req, res) => {
-//   res.send('users');
-// });
+// global error handler
+app.use(errorHandler);
 
 // start server
 let port = 0;
@@ -59,4 +42,6 @@ switch (process.env.REACT_APP_STAGE) {
     break;
 }
 
-app.listen(port, () => console.log('Server listening on port ' + port));
+app.listen(port, () =>
+  console.log(process.env.REACT_APP_STAGE + ' server listening on port ' + port)
+);
