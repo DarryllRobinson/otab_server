@@ -9,7 +9,6 @@ router.get('/', getAll);
 module.exports = router;
 
 function authenticate(req, res, next) {
-  console.log('user.controller authenticate: ', req.body);
   userService
     .authenticate(req.body)
     .then((user) => res.json(user))

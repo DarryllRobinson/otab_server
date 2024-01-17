@@ -26,7 +26,7 @@ switch (process.env.REACT_APP_STAGE) {
 module.exports = db = {};
 
 // Connect to the sql server using mysql2 then
-// create the database if it doesn't exist'
+// create the database if it doesn't exist
 // initialize sequelize then
 // initialize the models
 initialize();
@@ -61,11 +61,18 @@ async function newinitialize() {
 async function initialize() {
   // create db if it doesn't already exist
   console.log('REACT_APP_STAGE: ', process.env.REACT_APP_STAGE);
-  //console.log('Creating db with config: ', config);
+  console.log('Creating db with config: ', config);
   const { host, port, user, password, database, socketPath } = config;
 
   // connect to db
-  //console.log('!!!!!!!!!!!!!!!!! connect to db:', host, port, user, password, database);
+  console.log(
+    '!!!!!!!!!!!!!!!!! connect to db:',
+    host,
+    port,
+    user,
+    password,
+    database
+  );
 
   const connection = mysql.createConnection({
     host,
@@ -134,10 +141,12 @@ async function initSequelize(database, user, password, host, socketPath) {
 function initModels(db, sequelize) {
   //console.log('initModels ', db, sequelize);
   // init models and add them to the exported db object
-  db.Client = require('../clients/client.model')(sequelize);
+  db.Client = require('../../bin/clients/client.model.js')(sequelize);
 
-  db.User = require('../users/user.model')(sequelize);
-  db.RefreshToken = require('../users/refresh-token.model')(sequelize);
+  db.User = require('../../bin/users/user.model.js')(sequelize);
+  db.RefreshToken = require('../../bin/users/refresh-token.model.js')(
+    sequelize
+  );
 
   /*db.Account = require('../accounts/account.model')(sequelize);
   db.Case = require('../cases/case.model')(sequelize);
