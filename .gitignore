@@ -3,7 +3,7 @@
 # Config - including secrets
 config.json
 config.js
-tenant.config.js
+user-config.js
 
 # Logs
 logs
