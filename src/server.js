@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
   res.send('hello world');
 });
 
-app.use('/users', require('./users/users.controller'));
+app.use('/users', require('./users/user.controller'));
 
 // global error handler
 app.use(errorHandler);
