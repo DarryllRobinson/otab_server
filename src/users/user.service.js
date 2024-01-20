@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 const sendEmail = require('../helpers/send-email');
-const db = require('../helpers/db');
+const db = require('../helpers/user-db');
 const Role = require('../helpers/role');
 
 module.exports = {
@@ -400,7 +400,7 @@ async function sendVerificationEmail(user, origin) {
 
   await sendEmail({
     to: user.email,
-    subject: 'The System Collections Platform - Verify Email',
+    subject: 'Over the Air Bingo - Verify Email',
     html: `<h4>Verify Email</h4>
                <p>Thanks for registering!</p>
                ${message}`,
@@ -417,7 +417,7 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 
   await sendEmail({
     to: email,
-    subject: 'The System Collections Platform - Email Already Registered',
+    subject: 'Over the Air Bingo - Email Already Registered',
     html: `<h4>Email Already Registered</h4>
                <p>Your email <strong>${email}</strong> is already registered.</p>
                ${message}`,

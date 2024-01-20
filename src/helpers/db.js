@@ -29,7 +29,7 @@ module.exports = db = {};
 // create the database if it doesn't exist
 // initialize sequelize then
 // initialize the models
-initialize();
+//initialize();
 
 async function newinitialize() {
   const { host, port, user, password, database, socketPath } = config;
