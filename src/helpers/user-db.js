@@ -42,7 +42,7 @@ async function initialize() {
   connection.execute(
     `CREATE DATABASE IF NOT EXISTS \`${database}\`;`,
     async function (err, results, fields) {
-      console.log('just tried to create database');
+      console.log('Just tried to create user database');
       if (err) console.log('err: ', err); // results contains rows returned by server
       //console.log('results: ', results);
       //console.log('fields: ', fields);
