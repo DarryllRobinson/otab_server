@@ -44,5 +44,5 @@ function model(sequelize) {
     },
   };
 
-  return sequelize.define('user', attributes, options);
+  return sequelize.define('tbl_users', attributes, options);
 }

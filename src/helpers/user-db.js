@@ -44,8 +44,8 @@ async function initialize() {
     async function (err, results, fields) {
       console.log('Just tried to create user database');
       if (err) console.log('err: ', err); // results contains rows returned by server
-      //console.log('results: ', results);
-      //console.log('fields: ', fields);
+      console.log('results: ', results);
+      console.log('fields: ', fields);
 
       const sequelize = await initSequelize(
         database,
@@ -58,7 +58,7 @@ async function initialize() {
 
       // sync all models with database
       initModels(db, sequelize);
-      await sequelize.sync({ force: true });
+      //await sequelize.sync({ force: true });
       console.log('completed sync');
     }
   );
@@ -91,8 +91,6 @@ async function initSequelize(database, user, password, host, socketPath) {
 function initModels(db, sequelize) {
   // init models and add them to the exported db object
 
-  db.User = require('../../bin/users/user.model.js')(sequelize);
-  db.RefreshToken = require('../../bin/users/refresh-token.model.js')(
-    sequelize
-  );
+  db.User = require('../users/user.model.js')(sequelize);
+  db.RefreshToken = require('../users/refresh-token.model.js')(sequelize);
 }

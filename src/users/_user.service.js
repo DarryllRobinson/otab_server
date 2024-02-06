@@ -1,11 +1,11 @@
-const config = require('../helpers/config.js');
+﻿const config = require('../helpers/config.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
-const sendEmail = require('../helpers/send-email.js');
-const db = require('../helpers/user-db.js');
-const Role = require('../helpers/role.js');
+const sendEmail = require('../helpers/send-email');
+const db = require('../helpers/user-db');
+const Role = require('../helpers/role');
 
 module.exports = {
   authenticate,
@@ -16,6 +16,10 @@ module.exports = {
   forgotPassword,
   validateResetToken,
   resetPassword,
+  setPassword,
+  deactivate,
+  reactivate,
+  resendInvitation,
   getAll,
   getById,
   create,
@@ -24,6 +28,7 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
+  console.log('User authenticate', email, password, ipAddress);
   const user = await db.User.scope('withHash').findOne({
     where: { email },
   });
@@ -51,9 +56,41 @@ async function authenticate({ email, password, ipAddress }) {
   };
 }
 
+async function newauthenticate({ email, password, ipAddress }) {
+  const user = await db.User.scope('withHash').findOne({
+    where: { email },
+  });
+
+  if (
+    !user ||
+    !user.isVerified ||
+    !(await bcrypt.compare(password, user.passwordHash))
+  ) {
+    //throw 'Email or password is incorrect';
+    return { status: 'Error', message: 'Email or password is incorrect' };
+  }
+
+  // authentication successful so generate jwt and refresh tokens
+  const jwtToken = generateJwtToken(user);
+  const refreshToken = generateRefreshToken(user, ipAddress);
+
+  // save refresh token
+  await refreshToken.save();
+
+  // return basic details and tokens
+  return {
+    status: 'success',
+    ...basicDetails(user),
+    jwtToken,
+    refreshToken: refreshToken.token,
+  };
+}
+
 async function refreshToken({ token, ipAddress }) {
+  console.log('refreshToken starting: ', token, ipAddress);
   const refreshToken = await getRefreshToken(token);
-  const user = await refreshToken.getUser();
+  console.log('token: ', token);
+  const { user } = refreshToken;
 
   // replace old refresh token with a new one and save
   const newRefreshToken = generateRefreshToken(user, ipAddress);
@@ -84,28 +121,29 @@ async function revokeToken({ token, ipAddress }) {
 }
 
 async function register(params, origin) {
+  // check if first user
+  // const isFirstUser = (await db.User.count()) === 0;
+  // console.log('--------------------------------isFirstUser', isFirstUser);
+
   // validate
   if (await db.User.findOne({ where: { email: params.email } })) {
     // send already registered error in email to prevent user enumeration
-    return await sendAlreadyRegisteredEmail(params.email, origin);
+    //await sendAlreadyRegisteredEmail(params.email, origin);
+    return false;
   }
 
   // create user object
-  const user = new db.User(params);
-
-  // first registered user is an admin
-  const isFirstUser = (await db.User.count()) === 0;
-  user.role = isFirstUser ? Role.Admin : Role.User;
-  user.verificationToken = randomTokenString();
-
-  // hash password
-  user.passwordHash = await hash(params.password);
+  const newUser = await create(params);
+  //console.log('--------------------------------user', newUser); //const user = new db.User(params);
+  //user.verificationToken = randomTokenString();
 
   // save user
-  await user.save();
+  //console.log('--------------------------------user', user);
+  //await user.save();
 
   // send email
-  await sendVerificationEmail(user, origin);
+  //await sendVerificationEmail(user, origin);
+  return newUser;
 }
 
 async function verifyEmail({ token }) {
@@ -116,15 +154,22 @@ async function verifyEmail({ token }) {
   if (!user) throw 'Verification failed';
 
   user.verified = Date.now();
-  user.verificationToken = null;
   await user.save();
 }
 
 async function forgotPassword({ email }, origin) {
   const user = await db.User.findOne({ where: { email } });
+  //console.log('user: ', user);
 
   // always return ok response to prevent email enumeration
-  if (!user) return;
+  if (!user) {
+    console.log('User not found');
+    return { status: 'failed', message: 'User not found' };
+  }
+  if (!user.active) {
+    console.log('User inactive');
+    return { status: 'failed', message: 'User is deactivated' };
+  }
 
   // create reset token that expires after 24 hours
   user.resetToken = randomTokenString();
@@ -158,8 +203,22 @@ async function resetPassword({ token, password }) {
   await user.save();
 }
 
+async function setPassword({ token, password }) {
+  const user = await db.User.findOne({
+    where: { verificationToken: token },
+  });
+
+  if (!user) throw 'Verification failed';
+
+  // set password and remove verification token
+  user.passwordHash = await hash(password);
+  user.verificationToken = null;
+  await user.save();
+}
+
 async function getAll() {
   const users = await db.User.findAll();
+  //console.log('users: ', users);
   return users.map((x) => basicDetails(x));
 }
 
@@ -175,10 +234,22 @@ async function create(params) {
   }
 
   const user = new db.User(params);
-  user.verified = Date.now();
 
-  // hash password
-  user.passwordHash = await hash(params.password);
+  // first registered user is an admin and password is set at the time of registration
+  // Second user and onwards must have their password set via an email link
+  const isFirstUser = (await db.User.count()) === 0;
+
+  if (!isFirstUser) {
+    user.verificationToken = randomTokenString();
+  } else {
+    user.verified = Date.now();
+
+    user.role = Role.Super;
+    // hash password
+    user.passwordHash = await hash(params.password);
+    user.verificationToken = randomTokenString();
+    //console.log('passwordHash: ', passwordHash);
+  }
 
   // save user
   await user.save();
@@ -211,6 +282,40 @@ async function update(id, params) {
   return basicDetails(user);
 }
 
+async function resendInvitation(id, origin) {
+  const user = await getUser(id);
+
+  user.updated = Date.now();
+  user.verificationToken = randomTokenString();
+  await user.save();
+
+  // send email
+  await sendVerificationEmail(user, origin);
+  return true;
+}
+
+async function deactivate(id) {
+  const user = await getUser(id);
+
+  // change Active state on user and save
+  user.active = false;
+  user.updated = Date.now();
+  await user.save();
+
+  return { status: 'success' };
+}
+
+async function reactivate(id) {
+  const user = await getUser(id);
+
+  // change Active state on user and save
+  user.active = true;
+  user.updated = Date.now();
+  await user.save();
+
+  return { status: 'success' };
+}
+
 async function _delete(id) {
   const user = await getUser(id);
   await user.destroy();
@@ -225,7 +330,9 @@ async function getUser(id) {
 }
 
 async function getRefreshToken(token) {
-  const refreshToken = await db.RefreshToken.findOne({ where: { token } });
+  const refreshToken = await db.RefreshToken.findOne({ token }).populate(
+    'user'
+  );
   if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
   return refreshToken;
 }
@@ -256,44 +363,51 @@ function randomTokenString() {
 }
 
 function basicDetails(user) {
+  //console.log('&*&*&*&& basicDetails user: ', JSON.stringify(user));
   const {
     id,
-    title,
     firstName,
     lastName,
     email,
+    phone,
     role,
+    active,
     created,
     updated,
     isVerified,
+    f_clientId,
   } = user;
+
   return {
     id,
-    title,
     firstName,
     lastName,
     email,
+    phone,
     role,
+    active,
     created,
     updated,
     isVerified,
+    f_clientId,
   };
 }
 
 async function sendVerificationEmail(user, origin) {
+  //console.log('sendVerificationEmail', user, origin);
   let message;
   if (origin) {
-    const verifyUrl = `${origin}/user/verify-email?token=${user.verificationToken}`;
-    message = `<p>Please click the below link to verify your email address:</p>
-                   <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
+    const verifyUrl = `${origin}/users/verify-email?token=${user.verificationToken}`;
+    message = `<p>Please click below to verify your email address:</p>
+              <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
   } else {
-    message = `<p>Please use the below token to verify your email address with the <code>/user/verify-email</code> api route:</p>
-                   <p><code>${user.verificationToken}</code></p>`;
+    message = `<p>Please use the token below to verify your email address with the <code>/user/verify-email</code> api route:</p>
+              <p><code>${user.verificationToken}</code></p>`;
   }
 
   await sendEmail({
     to: user.email,
-    subject: 'Sign-up Verification API - Verify Email',
+    subject: 'Over the Air Bingo - Verify Email',
     html: `<h4>Verify Email</h4>
                <p>Thanks for registering!</p>
                ${message}`,
@@ -303,14 +417,14 @@ async function sendVerificationEmail(user, origin) {
 async function sendAlreadyRegisteredEmail(email, origin) {
   let message;
   if (origin) {
-    message = `<p>If you don't know your password please visit the <a href="${origin}/user/forgot-password">forgot password</a> page.</p>`;
+    message = `<p>If you don't know your password, please visit the <a href="${origin}/users/forgot-password">forgot password</a> page.</p>`;
   } else {
-    message = `<p>If you don't know your password you can reset it via the <code>/user/forgot-password</code> api route.</p>`;
+    message = `<p>If you don't know your password, please reset it via the <code>/user/forgot-password</code> api route.</p>`;
   }
 
   await sendEmail({
     to: email,
-    subject: 'Sign-up Verification API - Email Already Registered',
+    subject: 'Over the Air Bingo - Email Already Registered',
     html: `<h4>Email Already Registered</h4>
                <p>Your email <strong>${email}</strong> is already registered.</p>
                ${message}`,
@@ -320,17 +434,17 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 async function sendPasswordResetEmail(user, origin) {
   let message;
   if (origin) {
-    const resetUrl = `${origin}/user/reset-password?token=${user.resetToken}`;
-    message = `<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
-                   <p><a href="${resetUrl}">${resetUrl}</a></p>`;
+    const resetUrl = `${origin}/users/reset-password?token=${user.resetToken}`;
+    message = `<p>Please click the link below to reset your password; the link is valid for one day:</p>
+              <p><a href="${resetUrl}">${resetUrl}</a></p>`;
   } else {
-    message = `<p>Please use the below token to reset your password with the <code>/user/reset-password</code> api route:</p>
-                   <p><code>${user.resetToken}</code></p>`;
+    message = `<p>Please use the token below to reset your password with the <code>/user/reset-password</code> api route:</p>
+              <p><code>${user.resetToken}</code></p>`;
   }
 
   await sendEmail({
     to: user.email,
-    subject: 'Sign-up Verification API - Reset Password',
+    subject: 'The System Collections Platform - Reset Password',
     html: `<h4>Reset Password Email</h4>
                ${message}`,
   });

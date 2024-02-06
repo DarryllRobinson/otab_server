@@ -32,6 +32,7 @@ router.delete('/:id', authorise(), _delete);
 module.exports = router;
 
 function authenticateSchema(req, res, next) {
+  //console.log('authenticateSchema in user controller');
   const schema = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
@@ -40,6 +41,7 @@ function authenticateSchema(req, res, next) {
 }
 
 function authenticate(req, res, next) {
+  //console.log('authenticate in user controller');
   const { email, password } = req.body;
   const ipAddress = req.ip;
   userService
@@ -52,8 +54,10 @@ function authenticate(req, res, next) {
 }
 
 function refreshToken(req, res, next) {
+  //console.log('user controller refreshToken ', req.cookies, req.ipAddress);
   const token = req.cookies.refreshToken;
   const ipAddress = req.ip;
+  //console.log('user controller refreshToken ', token, ipAddress);
   userService
     .refreshToken({ token, ipAddress })
     .then(({ refreshToken, ...user }) => {
@@ -95,7 +99,7 @@ function registerSchema(req, res, next) {
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     phone: Joi.string().required(),
-    //password: Joi.string().min(8),
+    password: Joi.string().min(8),
     //confirmPassword: Joi.string().valid(Joi.ref('password')),
     role: Joi.string().required(),
     active: Joi.boolean().required(),
@@ -108,6 +112,7 @@ function register(req, res, next) {
   userService
     .register(req.body, req.get('origin'))
     .then((newUser) => {
+      //console.log('new user registered', newUser);
       if (newUser) {
         res.json({
           message:
@@ -115,6 +120,7 @@ function register(req, res, next) {
           status: 'success',
         });
       } else {
+        console.log('error');
         res.json({
           message:
             'Registration unsuccessful, a user with the same email was found',
