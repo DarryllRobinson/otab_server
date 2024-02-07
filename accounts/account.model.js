@@ -4,25 +4,13 @@ module.exports = model;
 
 function model(sequelize) {
   const attributes = {
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    mobile: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    passwordHash: { type: DataTypes.STRING, allowNull: true },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    email: { type: DataTypes.STRING, allowNull: false },
+    passwordHash: { type: DataTypes.STRING, allowNull: false },
+    title: { type: DataTypes.STRING, allowNull: false },
+    firstName: { type: DataTypes.STRING, allowNull: false },
+    lastName: { type: DataTypes.STRING, allowNull: false },
+    acceptTerms: { type: DataTypes.BOOLEAN },
     role: { type: DataTypes.STRING, allowNull: false },
-    active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     verificationToken: { type: DataTypes.STRING },
     verified: { type: DataTypes.DATE },
     resetToken: { type: DataTypes.STRING },
@@ -40,7 +28,6 @@ function model(sequelize) {
         return !!(this.verified || this.passwordReset);
       },
     },
-    f_clientId: { type: DataTypes.INTEGER },
   };
 
   const options = {
@@ -54,8 +41,7 @@ function model(sequelize) {
       // include hash with this scope
       withHash: { attributes: {} },
     },
-    tableName: 'tbl_users',
   };
 
-  return sequelize.define('user', attributes, options);
+  return sequelize.define('account', attributes, options);
 }
