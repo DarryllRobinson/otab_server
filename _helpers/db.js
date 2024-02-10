@@ -1,4 +1,4 @@
-const accountConfig = require('account.config.json');
+const userConfig = require('user.config.json');
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 
@@ -9,7 +9,7 @@ initialize();
 async function initialize() {
   // create db if it doesn't already exist
   const { host, port, user, password, database, socketPath } =
-    accountConfig.database;
+    userConfig.database;
   const connection = await mysql.createConnection({
     host,
     port,
@@ -29,12 +29,12 @@ async function initialize() {
   );
 
   // init models and add them to the exported db object
-  db.Account = require('../accounts/account.model')(sequelize);
-  db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
+  db.User = require('../users/user.model')(sequelize);
+  db.RefreshToken = require('../users/refresh-token.model')(sequelize);
 
   // define relationships
-  db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
-  db.RefreshToken.belongsTo(db.Account);
+  db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
+  db.RefreshToken.belongsTo(db.User);
 
   // sync all models with database
   await sequelize.sync();
