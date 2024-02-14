@@ -227,6 +227,7 @@ async function getUser(id) {
 
 async function getRefreshToken(token) {
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
+  console.log('refreshToken: ', refreshToken.isActive);
   if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
   return refreshToken;
 }
@@ -237,7 +238,7 @@ async function hash(password) {
 
 function generateJwtToken(user) {
   // create a jwt token containing the user id that expires in 15 minutes
-  return jwt.sign({ sub: user.id, id: user.id }, config.secret, {
+  return jwt.sign({ sub: user.id, id: user.id }, userConfig.secret, {
     expiresIn: '15m',
   });
 }

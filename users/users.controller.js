@@ -28,7 +28,8 @@ router.delete('/:id', authorize(), _delete);
 module.exports = router;
 
 function authenticateSchema(req, res, next) {
-  console.log('authSchema: ', req);
+  const { email, password } = req.body;
+  const ipAddress = req.ip;
   const schema = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
@@ -39,12 +40,10 @@ function authenticateSchema(req, res, next) {
 function authenticate(req, res, next) {
   const { email, password } = req.body;
   const ipAddress = req.ip;
-  console.log('!!!!!!!!!@@@@@@@@@@@email: ', email);
-  console.log('password: ', password);
-  console.log('req.ip: ', req.ip);
   userService
     .authenticate({ email, password, ipAddress })
     .then(({ refreshToken, ...user }) => {
+      console.log('setting a token: ', refreshToken);
       setTokenCookie(res, refreshToken);
       res.json(user);
     })
