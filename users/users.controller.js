@@ -70,14 +70,17 @@ function revokeTokenSchema(req, res, next) {
 }
 
 function revokeToken(req, res, next) {
+  const { body } = req;
+  console.log('revoking token');
+  console.log('revoking token ', body);
   // accept token from request body or cookie
-  const token = req.body.token || req.cookies.refreshToken;
+  const token = body.token || req.cookies.refreshToken;
   const ipAddress = req.ip;
 
   if (!token) return res.status(400).json({ message: 'Token is required' });
 
   // users can revoke their own tokens and admins can revoke any tokens
-  if (!req.user.ownsToken(token) && req.user.role !== Role.Admin) {
+  if (!body.ownsToken(token) && rbody.role !== Role.Admin) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 

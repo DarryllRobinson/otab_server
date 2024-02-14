@@ -17,17 +17,18 @@ function authorize(roles = []) {
 
     // authorize based on user role
     async (req, res, next) => {
-      const user = await db.User.findByPk(req.user.id);
+      const { body } = req;
+      const user = await db.User.findByPk(body.id);
 
-      if (!user || (roles.length && !roles.includes(user.role))) {
+      if (!user || (roles.length && !roles.includes(body.role))) {
         // user no longer exists or role not authorized
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
       // authentication and authorization successful
-      req.user.role = user.role;
+      body.role = user.role;
       const refreshTokens = await user.getRefreshTokens();
-      req.user.ownsToken = (token) =>
+      body.ownsToken = (token) =>
         !!refreshTokens.find((x) => x.token === token);
       next();
     },

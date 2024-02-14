@@ -52,11 +52,10 @@ async function authenticate({ email, password, ipAddress }) {
 }
 
 async function refreshToken({ token, ipAddress }) {
-  const refreshToken = await getRefreshToken(token);
-  console.log('refreshToken: ', refreshToken);
-  const user = await refreshToken.getUser();
+  //console.log('refreshToken: ', token);
 
-  // replace old refresh token with a new one and save
+  const refreshToken = await getRefreshToken(token);
+  const user = await refreshToken.getUser();
   const newRefreshToken = generateRefreshToken(user, ipAddress);
   refreshToken.revoked = Date.now();
   refreshToken.revokedByIp = ipAddress;
@@ -73,6 +72,42 @@ async function refreshToken({ token, ipAddress }) {
     jwtToken,
     refreshToken: newRefreshToken.token,
   };
+}
+
+async function _refreshToken({ token, ipAddress }) {
+  console.log('refreshToken!!');
+
+  if (token) {
+    const refreshToken = await getRefreshToken(token);
+    //console.log('refreshToken: ', refreshToken);
+    const user = await refreshToken.getUser();
+    // replace old refresh token with a new one and save
+    const newRefreshToken = generateRefreshToken(user, ipAddress);
+    refreshToken.revoked = Date.now();
+    refreshToken.revokedByIp = ipAddress;
+    refreshToken.replacedByToken = newRefreshToken.token;
+    await refreshToken.save();
+    await newRefreshToken.save();
+
+    // generate new jwt
+    const jwtToken = generateJwtToken(user);
+
+    // return basic details and tokens
+    return {
+      ...basicDetails(user),
+      jwtToken,
+      refreshToken: newRefreshToken.token,
+    };
+  } else {
+    console.log('no token');
+    // generate mock jwt
+    const jwtToken = generateJwtToken({ user: { id: '0' } });
+    return {
+      user: 'no user',
+      jwtToken,
+      refreshToken: jwtToken,
+    };
+  }
 }
 
 async function revokeToken({ token, ipAddress }) {
@@ -227,7 +262,7 @@ async function getUser(id) {
 
 async function getRefreshToken(token) {
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-  console.log('refreshToken: ', refreshToken.isActive);
+  //console.log('refreshToken: ', refreshToken.isActive);
   if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
   return refreshToken;
 }
