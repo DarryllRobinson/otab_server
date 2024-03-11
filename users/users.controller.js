@@ -53,13 +53,29 @@ function authenticate(req, res, next) {
 function refreshToken(req, res, next) {
   const token = req.cookies.refreshToken;
   const ipAddress = req.ip;
-  userService
-    .refreshToken({ token, ipAddress })
-    .then(({ refreshToken, ...user }) => {
-      setTokenCookie(res, refreshToken);
-      res.json(user);
-    })
-    .catch(next);
+
+  if (!token) {
+    console.log('Unauthorised');
+    return res.status(401).json({ message: 'Unauthorized' }); // unauthorised()
+    //   .then((msg) => {
+    //     console.log('msg: ', msg);
+    //     res(msg);
+    //   })
+    //   .catch(next);
+  } else {
+    userService
+      .refreshToken({ token, ipAddress })
+      .then(({ refreshToken, ...user }) => {
+        setTokenCookie(res, refreshToken);
+        res.json(user);
+      })
+      .catch(next);
+  }
+}
+
+async function unauthorised(res) {
+  console.log('Unauthorised');
+  return res.status(401).json({ message: 'Unauthorized' });
 }
 
 function revokeTokenSchema(req, res, next) {

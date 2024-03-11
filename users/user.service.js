@@ -52,7 +52,7 @@ async function authenticate({ email, password, ipAddress }) {
 }
 
 async function refreshToken({ token, ipAddress }) {
-  //console.log('refreshToken: ', token);
+  console.log('refreshToken: ', token);
 
   const refreshToken = await getRefreshToken(token);
   const user = await refreshToken.getUser();
