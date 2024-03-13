@@ -54,31 +54,31 @@ function refreshToken(req, res, next) {
   const token = req.cookies.refreshToken;
   const ipAddress = req.ip;
 
-  if (!token) {
-    console.log('Unauthorised');
-    return res.status(401).json({ message: 'Unauthorized' }); // unauthorised()
-    //   .then((msg) => {
-    //     console.log('msg: ', msg);
-    //     res(msg);
-    //   })
-    //   .catch(next);
-  } else {
-    userService
-      .refreshToken({ token, ipAddress })
-      .then(({ refreshToken, ...user }) => {
-        setTokenCookie(res, refreshToken);
-        res.json(user);
-      })
-      .catch(next);
-  }
+  if (!token) return unauthorised(res);
+  // console.log('Unauthorised');
+  // return res.status(401).json({ message: 'Unauthorized' });
+  // unauthorised()
+  //   .then((msg) => {
+  //     console.log('msg: ', msg);
+  //     res(msg);
+  //   })
+  //   .catch(next);
+  userService
+    .refreshToken({ token, ipAddress })
+    .then(({ refreshToken, ...user }) => {
+      setTokenCookie(res, refreshToken);
+      res.json(user);
+    })
+    .catch(next);
 }
 
 async function unauthorised(res) {
   console.log('Unauthorised');
-  return res.status(401).json({ message: 'Unauthorized' });
+  return res.status(401).json({ message: 'Unauthorised' });
 }
 
 function revokeTokenSchema(req, res, next) {
+  // console.log('2 revokeTokenSchema req: ', req.body);
   const schema = Joi.object({
     token: Joi.string().empty(''),
   });
@@ -86,17 +86,21 @@ function revokeTokenSchema(req, res, next) {
 }
 
 function revokeToken(req, res, next) {
+  // console.log('5 req.body ', req.body);
   const { body } = req;
-  console.log('revoking token');
-  console.log('revoking token ', body);
+
+  // console.log('revoking token');
+  // console.log('body ', body);
+  // console.log('body.ownsToken ', body.ownsToken);
   // accept token from request body or cookie
   const token = body.token || req.cookies.refreshToken;
   const ipAddress = req.ip;
+  // console.log('body.ownsToken(token) ', body.ownsToken(token));
 
   if (!token) return res.status(400).json({ message: 'Token is required' });
 
   // users can revoke their own tokens and admins can revoke any tokens
-  if (!body.ownsToken(token) && rbody.role !== Role.Admin) {
+  if (!body.ownsToken(token) && body.role !== Role.Admin) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
