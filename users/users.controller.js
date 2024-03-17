@@ -54,15 +54,8 @@ function refreshToken(req, res, next) {
   const token = req.cookies.refreshToken;
   const ipAddress = req.ip;
 
-  if (!token) return unauthorised(res);
-  // console.log('Unauthorised');
-  // return res.status(401).json({ message: 'Unauthorized' });
-  // unauthorised()
-  //   .then((msg) => {
-  //     console.log('msg: ', msg);
-  //     res(msg);
-  //   })
-  //   .catch(next);
+  if (!token || token === 'undefined') return unauthorised(res);
+
   userService
     .refreshToken({ token, ipAddress })
     .then(({ refreshToken, ...user }) => {
@@ -73,7 +66,7 @@ function refreshToken(req, res, next) {
 }
 
 async function unauthorised(res) {
-  console.log('Unauthorised');
+  // console.log('Unauthorised function called');
   return res.status(401).json({ message: 'Unauthorised' });
 }
 

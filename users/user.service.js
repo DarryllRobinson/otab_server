@@ -54,7 +54,13 @@ async function authenticate({ email, password, ipAddress }) {
 async function refreshToken({ token, ipAddress }) {
   console.log('refreshToken: ', token);
 
-  const refreshToken = await getRefreshToken(token);
+  try {
+    const refreshToken = await getRefreshToken(token);
+  } catch (error) {
+    console.log('catching the error: ', error);
+    if (error.status === 400) return error;
+  }
+  console.log('back');
   const user = await refreshToken.getUser();
   const newRefreshToken = generateRefreshToken(user, ipAddress);
   refreshToken.revoked = Date.now();
@@ -261,9 +267,11 @@ async function getUser(id) {
 }
 
 async function getRefreshToken(token) {
+  console.log('getRefreshToken(token): ', token);
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-  //console.log('refreshToken: ', refreshToken.isActive);
-  if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
+  console.log('refreshToken: ', refreshToken.isActive);
+  if (!refreshToken || !refreshToken.isActive)
+    throw { status: 400, message: 'Invalid token' };
   return refreshToken;
 }
 
