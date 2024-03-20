@@ -30,12 +30,19 @@ async function initialize() {
   // init models and add them to the exported db object
   db.User = require('../users/user.model')(sequelize);
   db.RefreshToken = require('../users/refresh-token.model')(sequelize);
+  db.Competition = require('../competitions/competition.model')(sequelize);
   db.Board = require('../boards/board.model')(sequelize);
   db.Tile = require('../tiles/tile.model')(sequelize);
 
   // define relationships
   db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
   db.RefreshToken.belongsTo(db.User);
+
+  db.User.hasMany(db.Board, { onDelete: 'CASCADE' });
+  db.Board.belongsTo(db.User);
+
+  db.Competition.hasMany(db.Board, { onDelete: 'CASCADE' });
+  db.Board.belongsTo(db.Competition);
 
   db.Board.hasMany(db.Tile, { onDelete: 'CASCADE' });
   db.Tile.belongsTo(db.Board);

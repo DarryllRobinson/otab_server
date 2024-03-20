@@ -8,11 +8,11 @@ module.exports = {
 };
 
 async function getAll() {
-  const boards = await db.Board.findAll();
-  return boards;
+  const competitions = await db.Competition.findAll();
+  return competitions;
 }
 
 async function getById(id) {
-  const board = await db.Board.getUser(id);
-  return board;
+  const competition = await db.Competition.getUser(id);
+  return competition;
 }

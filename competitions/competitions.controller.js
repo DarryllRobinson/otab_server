@@ -4,26 +4,27 @@ const Joi = require('joi');
 const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize');
 const Role = require('_helpers/role');
-const boardService = require('./board.service');
+const competitionService = require('./competition.service');
 
 // Routes
-router.get('/', authorize, getAll);
-router.get('/:id', authorize, getById);
+router.get('/', getAll);
+router.get('/:id', getById);
 
 function getAll(req, res, next) {
-  boardService
+  console.log('here I am!');
+  competitionService
     .getAll()
-    .then((boards) => {
-      res.json(boards);
+    .then((competitions) => {
+      res.json(competitions);
     })
     .catch(next);
 }
 
 function getById(req, res, next) {
-  boardService
+  competitionService
     .getById(req.params.id)
-    .then((board) => {
-      res.json(board);
+    .then((competition) => {
+      res.json(competition);
     })
     .catch(next);
 }
