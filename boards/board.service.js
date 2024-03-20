@@ -1,11 +1,16 @@
-const config = require('play.config.json');
+const config = require('config.json');
 const { Op } = require('sequelize');
-const db = require('_helpers/play.db');
+const db = require('_helpers/db');
 
 module.exports = {
-  retrieve,
+  retrieveBoard,
+  retrieveBoards,
 };
 
-async function retrieve({ id }) {
+async function retrieveBoard({ id }) {
   return await db.Board.findOne({ where: { id } });
+}
+
+async function retrieveBoards() {
+  return await db.Board.findAll();
 }

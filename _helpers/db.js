@@ -1,4 +1,4 @@
-const playConfig = require('play.config.json');
+const config = require('config.json');
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 
@@ -8,8 +8,7 @@ initialize();
 
 async function initialize() {
   // create db if it doesn't already exist
-  const { host, port, user, password, database, socketPath } =
-    playConfig.database;
+  const { host, port, user, password, database, socketPath } = config.database;
   const connection = await mysql.createConnection({
     host,
     port,
@@ -29,10 +28,15 @@ async function initialize() {
   );
 
   // init models and add them to the exported db object
+  db.User = require('../users/user.model')(sequelize);
+  db.RefreshToken = require('../users/refresh-token.model')(sequelize);
   db.Board = require('../boards/board.model')(sequelize);
   db.Tile = require('../tiles/tile.model')(sequelize);
 
   // define relationships
+  db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
+  db.RefreshToken.belongsTo(db.User);
+
   db.Board.hasMany(db.Tile, { onDelete: 'CASCADE' });
   db.Tile.belongsTo(db.Board);
 
@@ -55,9 +59,11 @@ async function initSequelize(database, user, password, host, socketPath) {
 
   try {
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    console.log(
+      'Connection to the OTAB database has been established successfully.'
+    );
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the OTAB database:', error);
   }
   return sequelize;
 }

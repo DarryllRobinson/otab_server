@@ -1,10 +1,10 @@
-﻿const userConfig = require('user.config.json');
+﻿const config = require('config.json');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 const sendEmail = require('_helpers/send-email');
-const db = require('_helpers/play.db');
+const db = require('_helpers/db');
 const Role = require('_helpers/role');
 
 module.exports = {
@@ -293,7 +293,7 @@ async function hash(password) {
 
 function generateJwtToken(user) {
   // create a jwt token containing the user id that expires in 15 minutes
-  return jwt.sign({ sub: user.id, id: user.id }, userConfig.secret, {
+  return jwt.sign({ sub: user.id, id: user.id }, config.secret, {
     expiresIn: '15m',
   });
 }

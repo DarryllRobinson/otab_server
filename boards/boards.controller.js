@@ -7,15 +7,27 @@ const Role = require('_helpers/role');
 const boardService = require('./board.service');
 
 // Routes
-router.post('/retrieve', retrieve);
+router.post('/retrieveBoard', retrieveBoard);
+router.post('/retrieveBoards', retrieveBoards);
 
-function retrieve(req, res, next) {
+function retrieveBoard(req, res, next) {
   const id = req.id;
 
   boardService
-    .retrieve(id)
+    .retrieveBoard(id)
     .then((board) => {
       res.json(board);
+    })
+    .catch(next);
+}
+
+function retrieveBoards(req, res, next) {
+  // console.log('retrieveBoards');
+  boardService
+    .retrieveBoards()
+    .then((boards) => {
+      console.log('retrieveBoards: ', boards);
+      res.json(boards);
     })
     .catch(next);
 }

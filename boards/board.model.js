@@ -9,5 +9,5 @@ function model(sequelize) {
     userId: { type: DataTypes.STRING, allowNull: false },
   };
 
-  return sequelize.define('tbl_boards', attributes);
+  return sequelize.define('board', attributes);
 }

@@ -11,8 +11,7 @@ function model(sequelize) {
     chosenArtist: { type: DataTypes.STRING },
     submitted: { type: DataTypes.BOOLEAN },
     correct: { type: DataTypes.BOOLEAN },
-    boardId: { type: DataTypes.STRING, allowNull: false },
   };
 
-  return sequelize.define('tbl_tiles', attributes);
+  return sequelize.define('tile', attributes);
 }
