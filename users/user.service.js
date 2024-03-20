@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 const sendEmail = require('_helpers/send-email');
-const db = require('_helpers/db');
+const db = require('_helpers/play.db');
 const Role = require('_helpers/role');
 
 module.exports = {
@@ -24,6 +24,7 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
+  console.log('db user: ', db.User);
   const user = await db.User.scope('withHash').findOne({
     where: { email },
   });
@@ -42,6 +43,7 @@ async function authenticate({ email, password, ipAddress }) {
 
   // save refresh token
   await refreshToken.save();
+  // console.log('saved in authenticate: ', refreshToken);
 
   // return basic details and tokens
   return {
@@ -52,32 +54,37 @@ async function authenticate({ email, password, ipAddress }) {
 }
 
 async function refreshToken({ token, ipAddress }) {
-  console.log('refreshToken: ', token);
+  // console.log('refreshToken: ', token);
 
   try {
     const refreshToken = await getRefreshToken(token);
+    // console.log('got new token: ', token);
+    // console.log('back');
+    // const user = await getUserByToken(token);
+    const user = await refreshToken.getUser();
+    // console.log('refreshToken user: ', user);
+    const newRefreshToken = generateRefreshToken(user, ipAddress);
+    refreshToken.revoked = Date.now();
+    refreshToken.revokedByIp = ipAddress;
+    refreshToken.replacedByToken = newRefreshToken.token;
+    // console.log('about to refreshToken.save: ', refreshToken);
+    await refreshToken.save();
+    // console.log('saved refreshToken.save');
+    await newRefreshToken.save();
+
+    // generate new jwt
+    const jwtToken = generateJwtToken(user);
+
+    // return basic details and tokens
+    return {
+      ...basicDetails(user),
+      jwtToken,
+      refreshToken: newRefreshToken.token,
+    };
   } catch (error) {
     console.log('catching the error: ', error);
     if (error.status === 400) return error;
   }
-  console.log('back');
-  const user = await refreshToken.getUser();
-  const newRefreshToken = generateRefreshToken(user, ipAddress);
-  refreshToken.revoked = Date.now();
-  refreshToken.revokedByIp = ipAddress;
-  refreshToken.replacedByToken = newRefreshToken.token;
-  await refreshToken.save();
-  await newRefreshToken.save();
-
-  // generate new jwt
-  const jwtToken = generateJwtToken(user);
-
-  // return basic details and tokens
-  return {
-    ...basicDetails(user),
-    jwtToken,
-    refreshToken: newRefreshToken.token,
-  };
 }
 
 async function _refreshToken({ token, ipAddress }) {
@@ -266,10 +273,15 @@ async function getUser(id) {
   return user;
 }
 
+async function getUserByToken(token) {
+  const { userId } = await db.RefreshToken.findOne({ where: { token } });
+  return await getUser(userId);
+}
+
 async function getRefreshToken(token) {
-  console.log('getRefreshToken(token): ', token);
+  // console.log('getRefreshToken(token): ', token);
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-  console.log('refreshToken: ', refreshToken.isActive);
+  // console.log('refreshToken: ', refreshToken.isActive);
   if (!refreshToken || !refreshToken.isActive)
     throw { status: 400, message: 'Invalid token' };
   return refreshToken;

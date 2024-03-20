@@ -20,6 +20,7 @@ app.use(
 
 // api routes
 app.use('/users', require('./users/users.controller'));
+app.use('/boards', require('./boards/boards.controller'));
 
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));

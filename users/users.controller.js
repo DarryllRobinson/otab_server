@@ -38,6 +38,7 @@ function authenticateSchema(req, res, next) {
 }
 
 function authenticate(req, res, next) {
+  console.log('authenticating');
   const { email, password } = req.body;
   const ipAddress = req.ip;
   userService
@@ -60,6 +61,7 @@ function refreshToken(req, res, next) {
     .refreshToken({ token, ipAddress })
     .then(({ refreshToken, ...user }) => {
       setTokenCookie(res, refreshToken);
+      // console.log('after setTokenCookie user: ', user);
       res.json(user);
     })
     .catch(next);
