@@ -39,3 +39,4 @@ typings
 
 # Configuration files
 *.config.json
+config.json
