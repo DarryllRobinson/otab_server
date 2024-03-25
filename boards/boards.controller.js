@@ -6,9 +6,12 @@ const authorize = require('_middleware/authorize');
 const Role = require('_helpers/role');
 const boardService = require('./board.service');
 
+// WHY DOES AUTHORISE NOT WORK?!?!?
+//////////////////
+
 // Routes
-router.get('/', authorize, getAll);
-router.get('/:id', authorize, getById);
+router.get('/', getAll);
+router.get('/:id', getById);
 
 function getAll(req, res, next) {
   boardService
