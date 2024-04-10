@@ -12,6 +12,7 @@ const boardService = require('./board.service');
 // Routes
 router.get('/', getAll);
 router.get('/:id', getById);
+router.post('/competition/user', getBoardByCompUserId);
 
 function getAll(req, res, next) {
   boardService
@@ -25,6 +26,17 @@ function getAll(req, res, next) {
 function getById(req, res, next) {
   boardService
     .getById(req.params.id)
+    .then((board) => {
+      res.json(board);
+    })
+    .catch(next);
+}
+
+function getBoardByCompUserId(req, res, next) {
+  const { compId, userId } = req.body;
+  console.log({ compId, userId });
+  boardService
+    .getBoardByCompUserId(compId, userId)
     .then((board) => {
       res.json(board);
     })
