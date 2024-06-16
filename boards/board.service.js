@@ -56,23 +56,17 @@ async function connect(user, password) {
 }
 
 async function getBoardByCompUserId(compId, userId) {
-  console.log(
-    'getBoardByCompUserId: ',
-    compId,
-    userId,
-    config.database.user,
-    config.database.password
-  );
   const sequelize = await connect(
     config.database.user,
     config.database.password
   );
   const board = await sequelize.query(
-    `SELECT * 
-  FROM otab.boards, otab.users
-  WHERE boards.userId = users.id
-  AND users.id = '${userId}'
-  AND boards.competitionId = '${compId}';`,
+    `SELECT otab.tiles.* 
+      FROM otab.users, otab.boards, otab.tiles
+      WHERE users.id = boards.userId
+      AND boards.id = tiles.boardId
+      AND users.id = '${userId}'
+      AND boards.competitionId = '${compId}';`,
     { type: QueryTypes.SELECT }
   );
   console.log('found a board: ', board);

@@ -28,8 +28,10 @@ async function getTile(id) {
 }
 
 async function create(params) {
+  console.log('create service: ', params);
   const tile = new db.Tile(params);
   // Save tile
-  await tile.save();
+  const result = await tile.save();
+  console.log('result: ', result);
   return tile;
 }

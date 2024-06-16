@@ -9,7 +9,7 @@ const tileService = require('./tile.service');
 // Routes
 router.get('/get-song', getSong);
 router.put('/:id', updateSchema, update);
-router.post('/', authorize(), createSchema, create);
+router.post('/', createSchema, create);
 
 module.exports = router;
 
@@ -39,14 +39,17 @@ function update(req, res, next) {
 function createSchema(req, res, next) {
   const schema = Joi.object({
     title: Joi.string().required(),
-    artist1: Joi.string().required(),
-    artist2: Joi.string().required(),
-    artist3: Joi.string().required(),
+    artists: Joi.array().required(),
+    boardId: Joi.number().required(),
+    // artist1: Joi.string().required(),
+    // artist2: Joi.string().required(),
+    // artist3: Joi.string().required(),
   });
   validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
+  // console.log('req.body: ', req.body);
   tileService
     .create(req.body)
     .then((tile) => res.json(tile))
