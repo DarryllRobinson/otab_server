@@ -6,6 +6,9 @@ module.exports = db = {};
 
 initialize();
 
+// mysql: counting number of tickets which are open per day basis
+// https://dba.stackexchange.com/questions/101249/mysql-counting-number-of-tickets-which-are-open-per-day-basis
+
 async function initialize() {
   // create db if it doesn't already exist
   const { host, port, user, password, database, socketPath } = config.database;

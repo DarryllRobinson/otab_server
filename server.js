@@ -5,13 +5,18 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const errorHandler = require('_middleware/error-handler');
+// const helmet = require('helmet');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// Helmet stuff to go here but I don't know enough about it yet
+// helmetjs.github.io/?ref=hackernoon.com
+// app.use(helmet());
+
 // allow cors requests from any origin and with credentials
-app.use(
+https: app.use(
   cors({
     origin: (origin, callback) => callback(null, true),
     credentials: true,
