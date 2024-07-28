@@ -75,13 +75,16 @@ async function unauthorised(res) {
 function revokeTokenSchema(req, res, next) {
   // console.log('2 revokeTokenSchema req: ', req.body);
   const schema = Joi.object({
-    token: Joi.string().empty(''),
+    jwtToken: Joi.string().empty(''),
+    ownsToken: Joi.function().required(),
   });
   validateRequest(req, next, schema);
+  // next();
 }
 
 function revokeToken(req, res, next) {
   // console.log('5 req.body ', req.body);
+  // console.log('5 req.cookies.refreshToken ', req.cookies.refreshToken);
   const { body } = req;
 
   // console.log('revoking token');

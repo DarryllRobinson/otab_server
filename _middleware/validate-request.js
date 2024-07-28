@@ -12,7 +12,7 @@ function validateRequest(req, next, schema) {
   const { error, value } = schema.validate(req.body, options);
   // console.log('3.1 value: ', value);
   if (error) {
-    console.log('validate error: ', error);
+    // console.log('validate error: ', error);
     next(`Validation error: ${error.details.map((x) => x.message).join(', ')}`);
   } else {
     // console.log('3.2 req.body: ', req.body);

@@ -36,6 +36,7 @@ function authorize(roles = []) {
       const refreshTokens = await user.getRefreshTokens();
       body.ownsToken = (token) =>
         !!refreshTokens.find((x) => x.token === token);
+      // console.log('body.ownsToken:', body.ownsToken);
       next();
     },
   ];
