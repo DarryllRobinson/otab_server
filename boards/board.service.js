@@ -12,6 +12,7 @@ module.exports = {
 
 async function getAll() {
   const boards = await db.Board.findAll();
+  // console.log('found these boards: ', boards);
   return boards;
 }
 

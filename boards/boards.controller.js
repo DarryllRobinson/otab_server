@@ -15,9 +15,11 @@ router.get('/:id', getById);
 router.post('/competition/user', getBoardByCompUserId);
 
 function getAll(req, res, next) {
+  // console.log('getting all boards');
   boardService
     .getAll()
     .then((boards) => {
+      console.log('about to return boards: ', boards);
       res.json(boards);
     })
     .catch(next);
