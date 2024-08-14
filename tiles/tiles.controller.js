@@ -8,6 +8,7 @@ const tileService = require('./tile.service');
 
 // Routes
 router.get('/get-song', getSong);
+router.post('/', getTiles);
 router.put('/:id', updateSchema, update);
 router.post('/', createSchema, create);
 
@@ -16,6 +17,19 @@ module.exports = router;
 function getSong(req, res, next) {
   console.log('getting song');
   tileService.getSong();
+}
+
+function getTiles(req, res, next) {
+  const { boardId } = req.body;
+  console.log('getting tiles with boardId: ', boardId);
+  // console.log('getting tiles with boardId: ', req.body);
+  tileService
+    .getTiles(boardId)
+    .then((tiles) => {
+      console.log('returning tiles with boardId: ', tiles);
+      res.json(tiles);
+    })
+    .catch(next);
 }
 
 function updateSchema(req, res, next) {

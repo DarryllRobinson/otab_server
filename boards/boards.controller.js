@@ -12,6 +12,8 @@ const boardService = require('./board.service');
 // Routes
 router.get('/', getAll);
 router.get('/:id', getAllByUserId);
+router.post('/', getById);
+router.post('/user', getAllByUserId);
 router.post('/competition/user', getBoardByCompUserId);
 
 function getAll(req, res, next) {
@@ -19,17 +21,30 @@ function getAll(req, res, next) {
   boardService
     .getAll()
     .then((boards) => {
-      console.log('about to return boards: ', boards);
+      // console.log('about to return boards: ', boards);
       res.json(boards);
     })
     .catch(next);
 }
 
 function getAllByUserId(req, res, next) {
+  const { userId } = req.body;
   // console.log('board controller getAllByUserId: ', req.params.id);
   boardService
-    .getAllByUserId(req.params.id)
+    .getAllByUserId(userId)
     .then((board) => {
+      res.json(board);
+    })
+    .catch(next);
+}
+
+function getById(req, res, next) {
+  const { boardId } = req.body;
+  // console.log('board controller getById: ', boardId);
+  boardService
+    .getById(boardId)
+    .then((board) => {
+      // console.log('about to return board: ', board);
       res.json(board);
     })
     .catch(next);

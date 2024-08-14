@@ -1,10 +1,64 @@
+const config = require('config.json');
+const mysql = require('mysql2');
+const { Sequelize } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
 const db = require('_helpers/db');
 
-module.exports = { getSong, update, create };
+module.exports = { getSong, getTiles, update, create };
 
 function getSong() {
   console.log('service getting song');
   return true;
+}
+
+async function getTiles(boardId) {
+  const sequelize = await connect(
+    config.database.user,
+    config.database.password
+  );
+  const tiles = await sequelize.query(
+    `SELECT otab.tiles.* 
+      FROM otab.tiles
+      WHERE tiles.boardId = '${boardId}';`,
+    { type: QueryTypes.SELECT }
+  );
+  console.log('found board tiles: ', tiles);
+  return tiles;
+}
+
+async function connect(user, password) {
+  // console.log('about to try: ', user, password);
+  try {
+    // console.log('****************** connecting to db: ', user, password);
+    const { host, port, database, socketPath } = config.database;
+    const connection = mysql.createConnection({
+      host,
+      port,
+      user,
+      password,
+      socketPath,
+    });
+
+    // connect to db
+    // console.log('!!!!!!!!!!!!!!!!! connect to db: ', database, user, password);
+    const sequelize = new Sequelize(
+      database,
+      user,
+      password,
+      {
+        dialect: 'mysql',
+        dialectOptions: { decimalNumbers: true, socketPath },
+      },
+      function (err, results) {
+        if (err) throw err;
+        console.log('result', results);
+      }
+    );
+    return sequelize;
+  } catch (e) {
+    console.log('!@##@! Error connecting to database: ' + e.message);
+    return;
+  }
 }
 
 async function update(id, params) {

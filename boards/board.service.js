@@ -7,6 +7,7 @@ const db = require('_helpers/db');
 module.exports = {
   getAll,
   getAllByUserId,
+  getById,
   getBoardByCompUserId,
 };
 
@@ -29,6 +30,12 @@ async function getAllByUserId(userId) {
   );
   console.log('found user boards: ', boards);
   return boards;
+}
+
+async function getById(id) {
+  const board = await db.Board.findByPk(id);
+  if (!board) throw 'Board not found';
+  return board;
 }
 
 async function connect(user, password) {
