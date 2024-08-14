@@ -6,7 +6,7 @@ const db = require('_helpers/db');
 
 module.exports = {
   getAll,
-  getById,
+  getAllByUserId,
   getBoardByCompUserId,
 };
 
@@ -16,9 +16,19 @@ async function getAll() {
   return boards;
 }
 
-async function getById(id) {
-  const board = await db.Board.getUser(id);
-  return board;
+async function getAllByUserId(userId) {
+  const sequelize = await connect(
+    config.database.user,
+    config.database.password
+  );
+  const boards = await sequelize.query(
+    `SELECT otab.boards.* 
+      FROM otab.boards
+      WHERE boards.userId = '${userId}';`,
+    { type: QueryTypes.SELECT }
+  );
+  console.log('found user boards: ', boards);
+  return boards;
 }
 
 async function connect(user, password) {
