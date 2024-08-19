@@ -10,7 +10,7 @@ const tileService = require('./tile.service');
 router.get('/get-song', getSong);
 router.post('/', getTiles);
 router.put('/:id', updateSchema, update);
-router.post('/', createSchema, create);
+router.post('/create', createSchema, create);
 
 module.exports = router;
 
@@ -51,6 +51,7 @@ function update(req, res, next) {
 }
 
 function createSchema(req, res, next) {
+  // console.log('************* createSchema: ', req.body);
   const schema = Joi.object({
     title: Joi.string().required(),
     artists: Joi.array().required(),
@@ -64,8 +65,31 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
   // console.log('req.body: ', req.body);
+  const flatTile = expandedTile(req.body);
   tileService
-    .create(req.body)
+    .create(flatTile)
     .then((tile) => res.json(tile))
     .catch(next);
+}
+
+function expandedTile(tile) {
+  // Need to loop over array to break it down into variables
+  // because MySQL can't handle arrays - annoyingly
+
+  const { title, artists, boardId } = tile;
+  for (let i = 0; i < artists.length; i++) {
+    // console.log('Loop artist: ', artists[i]);
+    eval(`var artist${i} = artists[${i}];`);
+  }
+  // console.log('Artist1: ', artist1);
+  // console.log('Artist2: ', artist2);
+  // console.log('Artist0: ', artist0);
+
+  return {
+    title,
+    artist0,
+    artist1,
+    artist2,
+    boardId,
+  };
 }

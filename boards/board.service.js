@@ -28,7 +28,7 @@ async function getAllByUserId(userId) {
       WHERE boards.userId = '${userId}';`,
     { type: QueryTypes.SELECT }
   );
-  console.log('found user boards: ', boards);
+  // console.log('found user boards: ', boards);
   return boards;
 }
 

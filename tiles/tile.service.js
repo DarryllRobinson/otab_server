@@ -82,10 +82,16 @@ async function getTile(id) {
 }
 
 async function create(params) {
-  console.log('create service: ', params);
+  // console.log('********************* create service: ', params);
   const tile = new db.Tile(params);
+  console.log('********************* tile: ', params);
   // Save tile
-  const result = await tile.save();
-  console.log('result: ', result);
-  return tile;
+  try {
+    const result = await tile.save();
+    console.log('result: ', result);
+    return tile;
+  } catch (error) {
+    console.log('Save error: ', error);
+    return error;
+  }
 }

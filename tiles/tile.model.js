@@ -4,11 +4,11 @@ module.exports = model;
 
 function model(sequelize) {
   const attributes = {
-    artists: { type: DataTypes.STRING, allowNull: false },
+    // artists: { type: DataTypes.STRING, allowNull: false },
     title: { type: DataTypes.STRING, allowNull: false },
-    // artist1: { type: DataTypes.STRING, allowNull: false },
-    // artist2: { type: DataTypes.STRING, allowNull: false },
-    // artist3: { type: DataTypes.STRING, allowNull: false },
+    artist0: { type: DataTypes.STRING, allowNull: false },
+    artist1: { type: DataTypes.STRING, allowNull: false },
+    artist2: { type: DataTypes.STRING, allowNull: false },
     chosenArtist: { type: DataTypes.STRING },
     correctArtist: { type: DataTypes.BOOLEAN },
     correctSong: { type: DataTypes.BOOLEAN },

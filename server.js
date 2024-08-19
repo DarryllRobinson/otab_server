@@ -42,3 +42,4 @@ app.listen(port, () => console.log('Server listening on port ' + port));
 
 // run this when you need to find the pid to kill
 // sudo lsof -i -P | grep LISTEN | grep :$PORT
+// mysql.server restart
