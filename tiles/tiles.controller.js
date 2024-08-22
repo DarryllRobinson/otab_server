@@ -8,7 +8,8 @@ const tileService = require('./tile.service');
 
 // Routes
 router.get('/get-song', getSong);
-router.post('/', getTiles);
+router.get('/', getAll);
+router.get('/:id', getTiles);
 router.put('/:id', updateSchema, update);
 router.post('/create', createSchema, create);
 
@@ -19,14 +20,19 @@ function getSong(req, res, next) {
   tileService.getSong();
 }
 
+function getAll(req, res, next) {
+  console.log('getting it all');
+  res.json({ message: 'Got to here' });
+}
+
 function getTiles(req, res, next) {
-  const { boardId } = req.body;
-  console.log('getting tiles with boardId: ', boardId);
+  // console.log('getting some few tiles');
+  // console.log('getting tiles with boardId: ', req.params.id);
   // console.log('getting tiles with boardId: ', req.body);
   tileService
-    .getTiles(boardId)
+    .getTiles(req.params.id)
     .then((tiles) => {
-      console.log('returning tiles with boardId: ', tiles);
+      // console.log('returning tiles with boardId: ', tiles);
       res.json(tiles);
     })
     .catch(next);

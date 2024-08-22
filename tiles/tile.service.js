@@ -22,8 +22,8 @@ async function getTiles(boardId) {
       WHERE tiles.boardId = '${boardId}';`,
     { type: QueryTypes.SELECT }
   );
-  console.log('found board tiles: ', tiles);
-  return tiles;
+  // console.log('found board tiles: ', tiles);
+  return collapsedArtists(tiles);
 }
 
 async function connect(user, password) {
@@ -84,14 +84,46 @@ async function getTile(id) {
 async function create(params) {
   // console.log('********************* create service: ', params);
   const tile = new db.Tile(params);
-  console.log('********************* tile: ', params);
+  // console.log('********************* tile: ', params);
   // Save tile
   try {
     const result = await tile.save();
-    console.log('result: ', result);
+    // console.log('result: ', result);
     return tile;
   } catch (error) {
     console.log('Save error: ', error);
     return error;
   }
+}
+
+function collapsedArtists(tiles) {
+  // console.log('tiles: ', tiles);
+
+  // Step through array of tiles to collapse artists in each object
+  tiles.forEach((tile) => {
+    const {
+      artist0,
+      artist1,
+      artist2,
+      chosenArtist,
+      correctArtist,
+      correctSong,
+      submitted,
+      createdAt,
+      updatedAt,
+      boardId,
+    } = tile;
+
+    // Push artists into an array
+    let artists = [];
+    artists.push(artist0, artist1, artist2);
+    tile.artists = artists;
+
+    // Remove string artists as now they're in an array
+    delete tile.artist0;
+    delete tile.artist1;
+    delete tile.artist2;
+  });
+  // console.log('collapsed tiles: ', tiles);
+  return tiles;
 }
