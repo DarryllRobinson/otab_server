@@ -101,18 +101,7 @@ function collapsedArtists(tiles) {
 
   // Step through array of tiles to collapse artists in each object
   tiles.forEach((tile) => {
-    const {
-      artist0,
-      artist1,
-      artist2,
-      chosenArtist,
-      correctArtist,
-      correctSong,
-      submitted,
-      createdAt,
-      updatedAt,
-      boardId,
-    } = tile;
+    const { artist0, artist1, artist2 } = tile;
 
     // Push artists into an array
     let artists = [];
