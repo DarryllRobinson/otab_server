@@ -94,9 +94,6 @@ async function getBoardByCompUserId(compId, userId) {
 
 async function create(params) {
   const board = new db.Board(params);
-
-  // save baord
   await board.save();
-
   return board;
 }

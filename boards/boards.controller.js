@@ -76,10 +76,10 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-  console.log('req.body: ', req.body);
+  // console.log('req.body: ', req.body);
   boardService
     .create(req.body)
-    .then((board) => res.json(boardId))
+    .then((board) => res.json(board))
     .catch(next);
 }
 
