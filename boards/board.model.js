@@ -4,7 +4,7 @@ module.exports = model;
 
 function model(sequelize) {
   const attributes = {
-    competitionId: { type: DataTypes.STRING, allowNull: false },
+    competitionId: { type: DataTypes.STRING, allowNull: true },
     // brand: { type: DataTypes.STRING, allowNull: false },
     userId: { type: DataTypes.STRING, allowNull: false },
   };

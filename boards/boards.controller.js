@@ -11,8 +11,9 @@ const boardService = require('./board.service');
 
 // Routes
 router.get('/', getAll);
-router.get('/:id', getAllByUserId);
-router.post('/', getById);
+// router.get('/:id', getAllByUserId);
+// router.get('/:id', getById);
+router.post('/', createSchema, create);
 router.post('/user', getAllByUserId);
 router.post('/competition/user', getBoardByCompUserId);
 
@@ -25,6 +26,10 @@ function getAll(req, res, next) {
       res.json(boards);
     })
     .catch(next);
+}
+
+function create(req, res, next) {
+  console.log('board controller create: ', req.params);
 }
 
 function getAllByUserId(req, res, next) {
@@ -58,6 +63,23 @@ function getBoardByCompUserId(req, res, next) {
     .then((board) => {
       res.json(board);
     })
+    .catch(next);
+}
+
+function createSchema(req, res, next) {
+  // console.log('************* createSchema: ', req.body);
+  const schema = Joi.object({
+    competitionId: Joi.number().required(),
+    userId: Joi.number().required(),
+  });
+  validateRequest(req, next, schema);
+}
+
+function create(req, res, next) {
+  console.log('req.body: ', req.body);
+  boardService
+    .create(req.body)
+    .then((board) => res.json(boardId))
     .catch(next);
 }
 

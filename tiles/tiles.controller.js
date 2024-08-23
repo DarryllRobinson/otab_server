@@ -22,7 +22,7 @@ function getSong(req, res, next) {
 
 function getAll(req, res, next) {
   console.log('getting it all');
-  res.json({ message: 'Got to here' });
+  res.json({ message: 'Got to here tiles controller' });
 }
 
 function getTiles(req, res, next) {

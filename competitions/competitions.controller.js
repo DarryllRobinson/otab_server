@@ -11,7 +11,7 @@ router.get('/', getAll);
 router.get('/:id', getById);
 
 function getAll(req, res, next) {
-  console.log('here I am!');
+  console.log('here I am! competition controller');
   competitionService
     .getAll()
     .then((competitions) => {

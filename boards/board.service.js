@@ -9,6 +9,7 @@ module.exports = {
   getAllByUserId,
   getById,
   getBoardByCompUserId,
+  create,
 };
 
 async function getAll() {
@@ -88,5 +89,14 @@ async function getBoardByCompUserId(compId, userId) {
     { type: QueryTypes.SELECT }
   );
   console.log('found a board: ', board);
+  return board;
+}
+
+async function create(params) {
+  const board = new db.Board(params);
+
+  // save baord
+  await board.save();
+
   return board;
 }
