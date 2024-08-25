@@ -19,16 +19,17 @@ async function getAll() {
 }
 
 async function getAllByUserId(userId) {
-  const sequelize = await connect(
-    config.database.user,
-    config.database.password
-  );
-  const boards = await sequelize.query(
-    `SELECT otab.boards.* 
-      FROM otab.boards
-      WHERE boards.userId = '${userId}';`,
-    { type: QueryTypes.SELECT }
-  );
+  // const sequelize = await connect(
+  //   config.database.user,
+  //   config.database.password
+  // );
+  // const boards = await sequelize.query(
+  //   `SELECT otab.boards.*
+  //     FROM otab.boards
+  //     WHERE boards.userId = '${userId}';`,
+  //   { type: QueryTypes.SELECT }
+  // );
+  const boards = await db.Board.findAll({ where: { userId: userId } });
   // console.log('found user boards: ', boards);
   return boards;
 }

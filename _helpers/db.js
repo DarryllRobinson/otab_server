@@ -36,6 +36,7 @@ async function initialize() {
   db.Competition = require('../competitions/competition.model')(sequelize);
   db.Board = require('../boards/board.model')(sequelize);
   db.Tile = require('../tiles/tile.model')(sequelize);
+  db.Song = require('../songs/song.model')(sequelize);
 
   // define relationships
   db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });

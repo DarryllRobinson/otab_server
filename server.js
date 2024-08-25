@@ -28,6 +28,7 @@ app.use('/users', require('./users/users.controller'));
 app.use('/boards', require('./boards/boards.controller'));
 app.use('/competitions', require('./competitions/competitions.controller'));
 app.use('/tiles', require('./tiles/tiles.controller'));
+app.use('/songs', require('./songs/songs.controller'));
 
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));

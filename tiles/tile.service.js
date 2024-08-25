@@ -17,12 +17,12 @@ async function getTiles(boardId) {
     config.database.password
   );
   const tiles = await sequelize.query(
-    `SELECT otab.tiles.* 
+    `SELECT otab.tiles.*
       FROM otab.tiles
       WHERE tiles.boardId = '${boardId}';`,
     { type: QueryTypes.SELECT }
   );
-  // console.log('found board tiles: ', tiles);
+  console.log('found board tiles: ', tiles);
   return collapsedArtists(tiles);
 }
 
