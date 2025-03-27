@@ -1,6 +1,6 @@
-const config = require('config.json');
-const { Op } = require('sequelize');
-const db = require('_helpers/db');
+const config = require("config.json");
+const { Op, where } = require("sequelize");
+const db = require("_helpers/db");
 
 module.exports = {
   getAll,
@@ -13,6 +13,6 @@ async function getAll() {
 }
 
 async function getById(id) {
-  const competition = await db.Competition.getUser(id);
+  const competition = await db.Competition.findOne({ where: { id } });
   return competition;
 }
