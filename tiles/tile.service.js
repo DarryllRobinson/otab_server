@@ -1,13 +1,13 @@
-const config = require('config.json');
-const mysql = require('mysql2');
-const { Sequelize } = require('sequelize');
-const { Op, QueryTypes } = require('sequelize');
-const db = require('_helpers/db');
+const config = require("config.json");
+const mysql = require("mysql2");
+const { Sequelize } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
+const db = require("_helpers/db");
 
 module.exports = { getSong, getTiles, update, create };
 
 function getSong() {
-  console.log('service getting song');
+  console.log("service getting song");
   return true;
 }
 
@@ -22,7 +22,7 @@ async function getTiles(boardId) {
       WHERE tiles.boardId = '${boardId}';`,
     { type: QueryTypes.SELECT }
   );
-  console.log('found board tiles: ', tiles);
+  console.log("found board tiles: ", tiles);
   return collapsedArtists(tiles);
 }
 
@@ -46,17 +46,17 @@ async function connect(user, password) {
       user,
       password,
       {
-        dialect: 'mysql',
+        dialect: "mysql",
         dialectOptions: { decimalNumbers: true, socketPath },
       },
       function (err, results) {
         if (err) throw err;
-        console.log('result', results);
+        console.log("result", results);
       }
     );
     return sequelize;
   } catch (e) {
-    console.log('!@##@! Error connecting to database: ' + e.message);
+    console.log("!@##@! Error connecting to database: " + e.message);
     return;
   }
 }
@@ -66,7 +66,7 @@ async function update(id, params) {
 
   // Check if tile already submitted
   if (tile.submitted) {
-    throw 'Tile already submitted';
+    throw "Tile already submitted";
   }
   // copy params to tile and save
   Object.assign(tile, params);
@@ -77,7 +77,7 @@ async function update(id, params) {
 
 async function getTile(id) {
   const tile = await db.Tile.findByPk(id);
-  if (!tile) throw 'Tile not found';
+  if (!tile) throw "Tile not found";
   return tile;
 }
 
@@ -91,7 +91,7 @@ async function create(params) {
     // console.log('result: ', result);
     return tile;
   } catch (error) {
-    console.log('Save error: ', error);
+    console.log("Save error: ", error);
     return error;
   }
 }
