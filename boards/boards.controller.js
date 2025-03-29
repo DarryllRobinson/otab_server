@@ -1,21 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('_middleware/validate-request');
-const authorize = require('_middleware/authorize');
-const Role = require('_helpers/role');
-const boardService = require('./board.service');
+const Joi = require("joi");
+const validateRequest = require("_middleware/validate-request");
+const authorize = require("_middleware/authorize");
+const Role = require("_helpers/role");
+const boardService = require("./board.service");
 
 // WHY DOES AUTHORISE NOT WORK?!?!?
 //////////////////
 
 // Routes
-router.get('/', getAll);
+router.get("/", getAll);
 // router.get('/:id', getAllByUserId);
 // router.get('/:id', getById);
-router.post('/', createSchema, create);
-router.post('/user', getAllByUserId);
-router.post('/competition/user', getBoardByCompUserId);
+router.post("/", createSchema, create);
+router.post("/user", getAllByUserId);
+router.post("/competition/user", getBoardByCompUserId);
 
 function getAll(req, res, next) {
   // console.log('getting all boards');
@@ -29,7 +29,11 @@ function getAll(req, res, next) {
 }
 
 function create(req, res, next) {
-  console.log('board controller create: ', req.params);
+  console.log("board controller create: ", req.params);
+  boardService
+    .create(req.body)
+    .then((board) => res.json(board))
+    .catch(next);
 }
 
 function getAllByUserId(req, res, next) {
