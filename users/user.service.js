@@ -7,6 +7,13 @@ const sendEmail = require("_helpers/send-email");
 const db = require("_helpers/db");
 const Role = require("_helpers/role");
 
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
 module.exports = {
   authenticate,
   refreshToken,
@@ -33,7 +40,7 @@ async function authenticate({ email, password, ipAddress }) {
     !user.isVerified ||
     !(await bcrypt.compare(password, user.passwordHash))
   ) {
-    throw "Email or password is incorrect";
+    throw new AppError("Email or password is incorrect", 401);
   }
 
   // authentication successful so generate jwt and refresh tokens

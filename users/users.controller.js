@@ -207,12 +207,16 @@ function getAll(req, res, next) {
 
 function getById(req, res, next) {
   if (Number(req.params.id) !== req.user.id && req.user.role !== Role.Admin) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized", code: 401 });
   }
 
   userService
     .getById(req.params.id)
-    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .then((user) =>
+      user
+        ? res.json(user)
+        : res.status(404).json({ error: "User not found", code: 404 })
+    )
     .catch(next);
 }
 

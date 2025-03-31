@@ -18,15 +18,25 @@ initialize();
 // https://dba.stackexchange.com/questions/101249/mysql-counting-number-of-tickets-which-are-open-per-day-basis
 
 async function initialize() {
-  // create db if it doesn't already exist
-  const connection = await mysql.createConnection({
-    host: DB_HOST,
-    port: DB_PORT,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    socketPath: DB_SOCKET_PATH,
-  });
-  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
+  let retries = 5;
+  while (retries) {
+    try {
+      const connection = await mysql.createConnection({
+        host: DB_HOST,
+        port: DB_PORT,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        socketPath: DB_SOCKET_PATH,
+      });
+      await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
+      break;
+    } catch (err) {
+      retries -= 1;
+      console.error("Database connection failed. Retrying...", err);
+      if (!retries) throw err;
+      await new Promise((res) => setTimeout(res, 5000));
+    }
+  }
 
   // connect to db
   const sequelize = await initSequelize(

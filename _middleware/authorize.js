@@ -1,6 +1,7 @@
 const { expressjwt: expressJwt } = require("express-jwt");
 const { secret } = require("config.json");
 const db = require("_helpers/db");
+const logger = require("winston");
 
 module.exports = authorize;
 
@@ -20,6 +21,7 @@ function authorize(roles = []) {
       const user = await db.User.findByPk(req.user.id);
 
       if (!user || (roles.length && !roles.includes(user.role))) {
+        logger.warn(`Unauthorized access attempt by user ID: ${req.user.id}`);
         return res.status(401).json({ message: "Unauthorized" });
       }
 
