@@ -23,19 +23,19 @@ paths:
               properties:
                 email:
                   type: string
-                  example: 'jason@example.com'
+                  example: "jason@example.com"
                 password:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
               required:
                 - email
                 - password
       responses:
-        '200':
+        "200":
           description: User details, a JWT access token and a refresh token cookie
           headers:
             Set-Cookie:
-              description: '`refreshToken`'
+              description: "`refreshToken`"
               schema:
                 type: string
                 example: refreshToken=51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550; Path=/; Expires=Tue, 16 Jun 2020 09:14:17 GMT; HttpOnly
@@ -46,32 +46,32 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: '5eb12e197e06a76ccdefc121'
+                    example: "5eb12e197e06a76ccdefc121"
                   title:
                     type: string
-                    example: 'Mr'
+                    example: "Mr"
                   firstName:
                     type: string
-                    example: 'Jason'
+                    example: "Jason"
                   lastName:
                     type: string
-                    example: 'Watmore'
+                    example: "Watmore"
                   email:
                     type: string
-                    example: 'jason@example.com'
+                    example: "jason@example.com"
                   role:
                     type: string
-                    example: 'Admin'
+                    example: "Admin"
                   created:
                     type: string
-                    example: '2020-05-05T09:12:57.848Z'
+                    example: "2020-05-05T09:12:57.848Z"
                   isVerified:
                     type: boolean
                     example: true
                   jwtToken:
                     type: string
-                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWIxMmUxOTdlMDZhNzZjY2RlZmMxMjEiLCJpZCI6IjVlYjEyZTE5N2UwNmE3NmNjZGVmYzEyMSIsImlhdCI6MTU4ODc1ODE1N30.xR9H0STbFOpSkuGA9jHNZOJ6eS7umHHqKRhI807YT1Y'
-        '400':
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWIxMmUxOTdlMDZhNzZjY2RlZmMxMjEiLCJpZCI6IjVlYjEyZTE5N2UwNmE3NmNjZGVmYzEyMSIsImlhdCI6MTU4ODc1ODE1N30.xR9H0STbFOpSkuGA9jHNZOJ6eS7umHHqKRhI807YT1Y"
+        "400":
           description: The email or password is incorrect
           content:
             application/json:
@@ -80,7 +80,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Email or password is incorrect'
+                    example: "Email or password is incorrect"
   /users/refresh-token:
     post:
       summary: Use a refresh token to generate a new JWT token and a new refresh token
@@ -94,11 +94,11 @@ paths:
             type: string
             example: 51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550
       responses:
-        '200':
+        "200":
           description: User details, a JWT access token and a new refresh token cookie
           headers:
             Set-Cookie:
-              description: '`refreshToken`'
+              description: "`refreshToken`"
               schema:
                 type: string
                 example: refreshToken=51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550; Path=/; Expires=Tue, 16 Jun 2020 09:14:17 GMT; HttpOnly
@@ -109,32 +109,32 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: '5eb12e197e06a76ccdefc121'
+                    example: "5eb12e197e06a76ccdefc121"
                   title:
                     type: string
-                    example: 'Mr'
+                    example: "Mr"
                   firstName:
                     type: string
-                    example: 'Jason'
+                    example: "Jason"
                   lastName:
                     type: string
-                    example: 'Watmore'
+                    example: "Watmore"
                   email:
                     type: string
-                    example: 'jason@example.com'
+                    example: "jason@example.com"
                   role:
                     type: string
-                    example: 'Admin'
+                    example: "Admin"
                   created:
                     type: string
-                    example: '2020-05-05T09:12:57.848Z'
+                    example: "2020-05-05T09:12:57.848Z"
                   isVerified:
                     type: boolean
                     example: true
                   jwtToken:
                     type: string
-                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWIxMmUxOTdlMDZhNzZjY2RlZmMxMjEiLCJpZCI6IjVlYjEyZTE5N2UwNmE3NmNjZGVmYzEyMSIsImlhdCI6MTU4ODc1ODE1N30.xR9H0STbFOpSkuGA9jHNZOJ6eS7umHHqKRhI807YT1Y'
-        '400':
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWIxMmUxOTdlMDZhNzZjY2RlZmMxMjEiLCJpZCI6IjVlYjEyZTE5N2UwNmE3NmNjZGVmYzEyMSIsImlhdCI6MTU4ODc1ODE1N30.xR9H0STbFOpSkuGA9jHNZOJ6eS7umHHqKRhI807YT1Y"
+        "400":
           description: The refresh token is invalid, revoked or expired
           content:
             application/json:
@@ -143,7 +143,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Invalid token'
+                    example: "Invalid token"
   /users/revoke-token:
     post:
       summary: Revoke a refresh token
@@ -166,9 +166,9 @@ paths:
               properties:
                 token:
                   type: string
-                  example: '51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550'
+                  example: "51872eca5efedcf424db4cf5afd16a9d00ad25b743a034c9c221afc85d18dcd5e4ad6e3f08607550"
       responses:
-        '200':
+        "200":
           description: The refresh token was successfully revoked
           content:
             application/json:
@@ -177,8 +177,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Token revoked'
-        '400':
+                    example: "Token revoked"
+        "400":
           description: The refresh token is invalid
           content:
             application/json:
@@ -187,9 +187,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Invalid token'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                    example: "Invalid token"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
   /users/register:
     post:
       summary: Register a new user user and send a verification email
@@ -204,22 +204,22 @@ paths:
               properties:
                 title:
                   type: string
-                  example: 'Mr'
+                  example: "Mr"
                 firstName:
                   type: string
-                  example: 'Jason'
+                  example: "Jason"
                 lastName:
                   type: string
-                  example: 'Watmore'
+                  example: "Watmore"
                 email:
                   type: string
-                  example: 'jason@example.com'
+                  example: "jason@example.com"
                 password:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 confirmPassword:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 acceptTerms:
                   type: boolean
               required:
@@ -231,7 +231,7 @@ paths:
                 - confirmPassword
                 - acceptTerms
       responses:
-        '200':
+        "200":
           description: The registration request was successful and a verification email has been sent to the specified email address
           content:
             application/json:
@@ -240,7 +240,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Registration successful, please check your email for verification instructions'
+                    example: "Registration successful, please check your email for verification instructions"
   /users/verify-email:
     post:
       summary: Verify a new user with a verification token received by email after registration
@@ -254,11 +254,11 @@ paths:
               properties:
                 token:
                   type: string
-                  example: '3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f'
+                  example: "3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f"
               required:
                 - token
       responses:
-        '200':
+        "200":
           description: Verification was successful so you can now login to the user
           content:
             application/json:
@@ -267,8 +267,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Verification successful, you can now login'
-        '400':
+                    example: "Verification successful, you can now login"
+        "400":
           description: Verification failed due to an invalid token
           content:
             application/json:
@@ -277,7 +277,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Verification failed'
+                    example: "Verification failed"
   /users/forgot-password:
     post:
       summary: Submit email address to reset the password on an user
@@ -291,11 +291,11 @@ paths:
               properties:
                 email:
                   type: string
-                  example: 'jason@example.com'
+                  example: "jason@example.com"
               required:
                 - email
       responses:
-        '200':
+        "200":
           description: The request was received and an email has been sent to the specified address with password reset instructions (if the email address is associated with an user)
           content:
             application/json:
@@ -304,7 +304,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Please check your email for password reset instructions'
+                    example: "Please check your email for password reset instructions"
   /users/validate-reset-token:
     post:
       summary: Validate the reset password token received by email after submitting to the /users/forgot-password route
@@ -318,11 +318,11 @@ paths:
               properties:
                 token:
                   type: string
-                  example: '3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f'
+                  example: "3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f"
               required:
                 - token
       responses:
-        '200':
+        "200":
           description: Token is valid
           content:
             application/json:
@@ -331,8 +331,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Token is valid'
-        '400':
+                    example: "Token is valid"
+        "400":
           description: Token is invalid
           content:
             application/json:
@@ -341,7 +341,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Invalid token'
+                    example: "Invalid token"
   /users/reset-password:
     post:
       summary: Reset the password for an user
@@ -355,19 +355,19 @@ paths:
               properties:
                 token:
                   type: string
-                  example: '3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f'
+                  example: "3c7f8d9c4cb348ff95a0b74a1452aa24fc9611bb76768bb9eafeeb826ddae2935f1880bc7713318f"
                 password:
                   type: string
-                  example: 'newPass123'
+                  example: "newPass123"
                 confirmPassword:
                   type: string
-                  example: 'newPass123'
+                  example: "newPass123"
               required:
                 - token
                 - password
                 - confirmPassword
       responses:
-        '200':
+        "200":
           description: Password reset was successful so you can now login to the user with the new password
           content:
             application/json:
@@ -376,8 +376,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Password reset successful, you can now login'
-        '400':
+                    example: "Password reset successful, you can now login"
+        "400":
           description: Password reset failed due to an invalid token
           content:
             application/json:
@@ -386,7 +386,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Invalid token'
+                    example: "Invalid token"
   /users:
     get:
       summary: Get a list of all users
@@ -395,7 +395,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: An array of all users
           content:
             application/json:
@@ -406,30 +406,30 @@ paths:
                   properties:
                     id:
                       type: string
-                      example: '5eb12e197e06a76ccdefc121'
+                      example: "5eb12e197e06a76ccdefc121"
                     title:
                       type: string
-                      example: 'Mr'
+                      example: "Mr"
                     firstName:
                       type: string
-                      example: 'Jason'
+                      example: "Jason"
                     lastName:
                       type: string
-                      example: 'Watmore'
+                      example: "Watmore"
                     email:
                       type: string
-                      example: 'jason@example.com'
+                      example: "jason@example.com"
                     role:
                       type: string
-                      example: 'Admin'
+                      example: "Admin"
                     created:
                       type: string
-                      example: '2020-05-05T09:12:57.848Z'
+                      example: "2020-05-05T09:12:57.848Z"
                     updated:
                       type: string
-                      example: '2020-05-08T03:11:21.553Z'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                      example: "2020-05-08T03:11:21.553Z"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       summary: Create a new user
       description: Restricted to admin users.
@@ -445,22 +445,22 @@ paths:
               properties:
                 title:
                   type: string
-                  example: 'Mr'
+                  example: "Mr"
                 firstName:
                   type: string
-                  example: 'Jason'
+                  example: "Jason"
                 lastName:
                   type: string
-                  example: 'Watmore'
+                  example: "Watmore"
                 email:
                   type: string
-                  example: 'jason@example.com'
+                  example: "jason@example.com"
                 password:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 confirmPassword:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 role:
                   type: string
                   enum: [Admin, User]
@@ -473,7 +473,7 @@ paths:
                 - confirmPassword
                 - role
       responses:
-        '200':
+        "200":
           description: User created successfully, verification is not required for users created with this endpoint. The details of the new user are returned.
           content:
             application/json:
@@ -482,26 +482,26 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: '5eb12e197e06a76ccdefc121'
+                    example: "5eb12e197e06a76ccdefc121"
                   title:
                     type: string
-                    example: 'Mr'
+                    example: "Mr"
                   firstName:
                     type: string
-                    example: 'Jason'
+                    example: "Jason"
                   lastName:
                     type: string
-                    example: 'Watmore'
+                    example: "Watmore"
                   email:
                     type: string
-                    example: 'jason@example.com'
+                    example: "jason@example.com"
                   role:
                     type: string
-                    example: 'Admin'
+                    example: "Admin"
                   created:
                     type: string
-                    example: '2020-05-05T09:12:57.848Z'
-        '400':
+                    example: "2020-05-05T09:12:57.848Z"
+        "400":
           description: Email is already registered
           content:
             application/json:
@@ -511,15 +511,15 @@ paths:
                   message:
                     type: string
                     example: "Email 'jason@example.com' is already registered"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
   /users/{id}:
     parameters:
       - in: path
         name: id
         description: User id
         required: true
-        example: '5eb12e197e06a76ccdefc121'
+        example: "5eb12e197e06a76ccdefc121"
         schema:
           type: string
     get:
@@ -529,7 +529,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Details of the specified user
           content:
             application/json:
@@ -538,32 +538,32 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: '5eb12e197e06a76ccdefc121'
+                    example: "5eb12e197e06a76ccdefc121"
                   title:
                     type: string
-                    example: 'Mr'
+                    example: "Mr"
                   firstName:
                     type: string
-                    example: 'Jason'
+                    example: "Jason"
                   lastName:
                     type: string
-                    example: 'Watmore'
+                    example: "Watmore"
                   email:
                     type: string
-                    example: 'jason@example.com'
+                    example: "jason@example.com"
                   role:
                     type: string
-                    example: 'Admin'
+                    example: "Admin"
                   created:
                     type: string
-                    example: '2020-05-05T09:12:57.848Z'
+                    example: "2020-05-05T09:12:57.848Z"
                   updated:
                     type: string
-                    example: '2020-05-08T03:11:21.553Z'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                    example: "2020-05-08T03:11:21.553Z"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     put:
       summary: Update an user
       description: Admin users can update any user including role, regular users are restricted to their own user and cannot update role.
@@ -579,27 +579,27 @@ paths:
               properties:
                 title:
                   type: string
-                  example: 'Mr'
+                  example: "Mr"
                 firstName:
                   type: string
-                  example: 'Jason'
+                  example: "Jason"
                 lastName:
                   type: string
-                  example: 'Watmore'
+                  example: "Watmore"
                 email:
                   type: string
-                  example: 'jason@example.com'
+                  example: "jason@example.com"
                 password:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 confirmPassword:
                   type: string
-                  example: 'pass123'
+                  example: "pass123"
                 role:
                   type: string
                   enum: [Admin, User]
       responses:
-        '200':
+        "200":
           description: User updated successfully. The details of the updated user are returned.
           content:
             application/json:
@@ -608,32 +608,32 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: '5eb12e197e06a76ccdefc121'
+                    example: "5eb12e197e06a76ccdefc121"
                   title:
                     type: string
-                    example: 'Mr'
+                    example: "Mr"
                   firstName:
                     type: string
-                    example: 'Jason'
+                    example: "Jason"
                   lastName:
                     type: string
-                    example: 'Watmore'
+                    example: "Watmore"
                   email:
                     type: string
-                    example: 'jason@example.com'
+                    example: "jason@example.com"
                   role:
                     type: string
-                    example: 'Admin'
+                    example: "Admin"
                   created:
                     type: string
-                    example: '2020-05-05T09:12:57.848Z'
+                    example: "2020-05-05T09:12:57.848Z"
                   updated:
                     type: string
-                    example: '2020-05-08T03:11:21.553Z'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                    example: "2020-05-08T03:11:21.553Z"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       summary: Delete an user
       description: Admin users can delete any user, regular users are restricted to their own user.
@@ -641,7 +641,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: User deleted successfully
           content:
             application/json:
@@ -650,11 +650,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'User deleted successfully'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                    example: "User deleted successfully"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
 components:
   securitySchemes:
@@ -672,7 +672,7 @@ components:
             properties:
               message:
                 type: string
-                example: 'Unauthorized'
+                example: "Unauthorized"
     NotFoundError:
       description: Not Found
       content:
@@ -682,4 +682,4 @@ components:
             properties:
               message:
                 type: string
-                example: 'Not Found'
+                example: "Not Found"

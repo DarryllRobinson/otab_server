@@ -1,6 +1,14 @@
-const config = require('config.json');
-const mysql = require('mysql2/promise');
-const { Sequelize } = require('sequelize');
+const config = require("config.json");
+const mysql = require("mysql2/promise");
+const { Sequelize } = require("sequelize");
+
+// Use environment variables with fallback to config.json
+const DB_HOST = process.env.DB_HOST || config.database.host;
+const DB_PORT = process.env.DB_PORT || config.database.port;
+const DB_USER = process.env.DB_USER || config.database.user;
+const DB_PASSWORD = process.env.DB_PASSWORD || config.database.password;
+const DB_NAME = process.env.DB_NAME || config.database.database;
+const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || config.database.socketPath;
 
 module.exports = db = {};
 
@@ -11,44 +19,43 @@ initialize();
 
 async function initialize() {
   // create db if it doesn't already exist
-  const { host, port, user, password, database, socketPath } = config.database;
   const connection = await mysql.createConnection({
-    host,
-    port,
-    user,
-    password,
-    socketPath,
+    host: DB_HOST,
+    port: DB_PORT,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    socketPath: DB_SOCKET_PATH,
   });
-  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
+  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
 
   // connect to db
   const sequelize = await initSequelize(
-    database,
-    user,
-    password,
-    host,
-    socketPath
+    DB_NAME,
+    DB_USER,
+    DB_PASSWORD,
+    DB_HOST,
+    DB_SOCKET_PATH
   );
 
   // init models and add them to the exported db object
-  db.User = require('../users/user.model')(sequelize);
-  db.RefreshToken = require('../users/refresh-token.model')(sequelize);
-  db.Competition = require('../competitions/competition.model')(sequelize);
-  db.Board = require('../boards/board.model')(sequelize);
-  db.Tile = require('../tiles/tile.model')(sequelize);
-  db.Song = require('../songs/song.model')(sequelize);
+  db.User = require("../users/user.model")(sequelize);
+  db.RefreshToken = require("../users/refresh-token.model")(sequelize);
+  db.Competition = require("../competitions/competition.model")(sequelize);
+  db.Board = require("../boards/board.model")(sequelize);
+  db.Tile = require("../tiles/tile.model")(sequelize);
+  db.Song = require("../songs/song.model")(sequelize);
 
   // define relationships
-  db.User.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
+  db.User.hasMany(db.RefreshToken, { onDelete: "CASCADE" });
   db.RefreshToken.belongsTo(db.User);
 
-  db.User.hasMany(db.Board, { onDelete: 'CASCADE' });
+  db.User.hasMany(db.Board, { onDelete: "CASCADE" });
   db.Board.belongsTo(db.User);
 
-  db.Competition.hasMany(db.Board, { onDelete: 'CASCADE' });
+  db.Competition.hasMany(db.Board, { onDelete: "CASCADE" });
   db.Board.belongsTo(db.Competition);
 
-  db.Board.hasMany(db.Tile, { onDelete: 'CASCADE' });
+  db.Board.hasMany(db.Tile, { onDelete: "CASCADE" });
   db.Tile.belongsTo(db.Board);
 
   // sync all models with database
@@ -57,7 +64,7 @@ async function initialize() {
 
 async function initSequelize(database, user, password, host, socketPath) {
   const sequelize = new Sequelize(database, user, password, {
-    dialect: 'mysql',
+    dialect: "mysql",
     dialectOptions: { decimalNumbers: true, socketPath },
     host,
     pool: {
@@ -71,10 +78,10 @@ async function initSequelize(database, user, password, host, socketPath) {
   try {
     await sequelize.authenticate();
     console.log(
-      'Connection to the OTAB database has been established successfully.'
+      "Connection to the OTAB database has been established successfully."
     );
   } catch (error) {
-    console.error('Unable to connect to the OTAB database:', error);
+    console.error("Unable to connect to the OTAB database:", error);
   }
   return sequelize;
 }

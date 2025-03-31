@@ -1,11 +1,11 @@
-﻿const config = require('config.json');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
-const { Op } = require('sequelize');
-const sendEmail = require('_helpers/send-email');
-const db = require('_helpers/db');
-const Role = require('_helpers/role');
+﻿const config = require("config.json");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const { Op } = require("sequelize");
+const sendEmail = require("_helpers/send-email");
+const db = require("_helpers/db");
+const Role = require("_helpers/role");
 
 module.exports = {
   authenticate,
@@ -24,8 +24,7 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
-  console.log('db user: ', db.User);
-  const user = await db.User.scope('withHash').findOne({
+  const user = await db.User.scope("withHash").findOne({
     where: { email },
   });
 
@@ -34,7 +33,7 @@ async function authenticate({ email, password, ipAddress }) {
     !user.isVerified ||
     !(await bcrypt.compare(password, user.passwordHash))
   ) {
-    throw 'Email or password is incorrect';
+    throw "Email or password is incorrect";
   }
 
   // authentication successful so generate jwt and refresh tokens
@@ -53,42 +52,32 @@ async function authenticate({ email, password, ipAddress }) {
   };
 }
 
+// Remove unnecessary console logs
 async function refreshToken({ token, ipAddress }) {
-  // console.log('refreshToken: ', token);
+  const refreshToken = await getRefreshToken(token);
+  const user = await refreshToken.getUser();
+  const newRefreshToken = generateRefreshToken(user, ipAddress);
 
-  try {
-    const refreshToken = await getRefreshToken(token);
-    // console.log('got new token: ', token);
-    // console.log('back');
-    // const user = await getUserByToken(token);
-    const user = await refreshToken.getUser();
-    // console.log('refreshToken user: ', user);
-    const newRefreshToken = generateRefreshToken(user, ipAddress);
-    refreshToken.revoked = Date.now();
-    refreshToken.revokedByIp = ipAddress;
-    refreshToken.replacedByToken = newRefreshToken.token;
-    // console.log('about to refreshToken.save: ', refreshToken);
-    await refreshToken.save();
-    // console.log('saved refreshToken.save');
-    await newRefreshToken.save();
+  // console.log('about to refreshToken.save: ', refreshToken);
+  refreshToken.revoked = Date.now();
+  refreshToken.revokedByIp = ipAddress;
+  refreshToken.replacedByToken = newRefreshToken.token;
+  await refreshToken.save();
+  await newRefreshToken.save();
 
-    // generate new jwt
-    const jwtToken = generateJwtToken(user);
+  // generate new jwt
+  const jwtToken = generateJwtToken(user);
 
-    // return basic details and tokens
-    return {
-      ...basicDetails(user),
-      jwtToken,
-      refreshToken: newRefreshToken.token,
-    };
-  } catch (error) {
-    console.log('catching the error: ', error);
-    if (error.status === 400) return error;
-  }
+  // return basic details and tokens
+  return {
+    ...basicDetails(user),
+    jwtToken,
+    refreshToken: newRefreshToken.token,
+  };
 }
 
 async function _refreshToken({ token, ipAddress }) {
-  console.log('refreshToken!!');
+  console.log("refreshToken!!");
 
   if (token) {
     const refreshToken = await getRefreshToken(token);
@@ -112,11 +101,11 @@ async function _refreshToken({ token, ipAddress }) {
       refreshToken: newRefreshToken.token,
     };
   } else {
-    console.log('no token');
+    console.log("no token");
     // generate mock jwt
-    const jwtToken = generateJwtToken({ user: { id: '0' } });
+    const jwtToken = generateJwtToken({ user: { id: "0" } });
     return {
-      user: 'no user',
+      user: "no user",
       jwtToken,
       refreshToken: jwtToken,
     };
@@ -162,7 +151,7 @@ async function verifyEmail({ token }) {
     where: { verificationToken: token },
   });
 
-  if (!user) throw 'Verification failed';
+  if (!user) throw "Verification failed";
 
   user.verified = Date.now();
   user.verificationToken = null;
@@ -192,7 +181,7 @@ async function validateResetToken({ token }) {
     },
   });
 
-  if (!user) throw 'Invalid token';
+  if (!user) throw "Invalid token";
 
   return user;
 }
@@ -269,7 +258,7 @@ async function _delete(id) {
 
 async function getUser(id) {
   const user = await db.User.findByPk(id);
-  if (!user) throw 'User not found';
+  if (!user) throw "User not found";
   return user;
 }
 
@@ -283,7 +272,7 @@ async function getRefreshToken(token) {
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
   // console.log('refreshToken: ', refreshToken.isActive);
   if (!refreshToken || !refreshToken.isActive)
-    throw { status: 400, message: 'Invalid token' };
+    throw { status: 400, message: "Invalid token" };
   return refreshToken;
 }
 
@@ -294,7 +283,7 @@ async function hash(password) {
 function generateJwtToken(user) {
   // create a jwt token containing the user id that expires in 15 minutes
   return jwt.sign({ sub: user.id, id: user.id }, config.secret, {
-    expiresIn: '15m',
+    expiresIn: "15m",
   });
 }
 
@@ -309,7 +298,7 @@ function generateRefreshToken(user, ipAddress) {
 }
 
 function randomTokenString() {
-  return crypto.randomBytes(40).toString('hex');
+  return crypto.randomBytes(40).toString("hex");
 }
 
 function basicDetails(user) {
@@ -339,7 +328,7 @@ async function sendVerificationEmail(user, origin) {
 
   await sendEmail({
     to: user.email,
-    subject: 'Sign-up Verification API - Verify Email',
+    subject: "Sign-up Verification API - Verify Email",
     html: `<h4>Verify Email</h4>
                <p>Thanks for registering!</p>
                ${message}`,
@@ -356,7 +345,7 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 
   await sendEmail({
     to: email,
-    subject: 'Sign-up Verification API - Email Already Registered',
+    subject: "Sign-up Verification API - Email Already Registered",
     html: `<h4>Email Already Registered</h4>
                <p>Your email <strong>${email}</strong> is already registered.</p>
                ${message}`,
@@ -376,7 +365,7 @@ async function sendPasswordResetEmail(user, origin) {
 
   await sendEmail({
     to: user.email,
-    subject: 'Sign-up Verification API - Reset Password',
+    subject: "Sign-up Verification API - Reset Password",
     html: `<h4>Reset Password Email</h4>
                ${message}`,
   });
