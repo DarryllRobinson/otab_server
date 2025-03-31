@@ -1,28 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('_middleware/validate-request');
-const authorize = require('_middleware/authorize');
-const Role = require('_helpers/role');
-const tileService = require('./tile.service');
+const Joi = require("joi");
+const validateRequest = require("_middleware/validate-request");
+const authorize = require("_middleware/authorize");
+const Role = require("_helpers/role");
+const tileService = require("./tile.service");
 
 // Routes
-router.get('/get-song', getSong);
-router.get('/', getAll);
-router.get('/:id', getTiles);
-router.put('/:id', updateSchema, update);
-router.post('/create', createSchema, create);
+router.get("/get-song", getSong);
+router.get("/", getAll);
+router.get("/:id", getTiles);
+router.put("/:id", updateSchema, update);
+router.post("/create", createSchema, create);
 
 module.exports = router;
 
 function getSong(req, res, next) {
-  console.log('getting song');
+  console.log("getting song");
   tileService.getSong();
 }
 
 function getAll(req, res, next) {
-  console.log('getting it all');
-  res.json({ message: 'Got to here tiles controller' });
+  console.log("getting it all");
+  res.json({ message: "Got to here tiles controller" });
 }
 
 function getTiles(req, res, next) {
@@ -49,7 +49,7 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-  console.log('updating controller: ', req.params.id, req.body);
+  // console.log("updating controller: ", req.params.id, req.body);
   tileService
     .update(req.params.id, req.body)
     .then((tile) => res.json(tile))
@@ -57,9 +57,10 @@ function update(req, res, next) {
 }
 
 function createSchema(req, res, next) {
-  // console.log('************* createSchema: ', req.body);
+  // console.log("************* createSchema: ", req.body);
   const schema = Joi.object({
     title: Joi.string().required(),
+    actualArtist: Joi.string().required(),
     artists: Joi.array().required(),
     boardId: Joi.number().required(),
     // artist1: Joi.string().required(),
@@ -82,7 +83,7 @@ function expandedTile(tile) {
   // Need to loop over array to break it down into variables
   // because MySQL can't handle arrays - annoyingly
 
-  const { title, artists, boardId } = tile;
+  const { title, actualArtist, artists, boardId } = tile;
   for (let i = 0; i < artists.length; i++) {
     // console.log('Loop artist: ', artists[i]);
     eval(`var artist${i} = artists[${i}];`);
@@ -93,6 +94,7 @@ function expandedTile(tile) {
 
   return {
     title,
+    actualArtist,
     artist0,
     artist1,
     artist2,
